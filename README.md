@@ -1,3 +1,3 @@
-Eleanor Roosevelt HS
-Team Area 53D 
+Eleanor Roosevelt HS -
+Team Area 53D - 
 In the Zone Season Code
