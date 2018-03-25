@@ -1,11 +1,9 @@
 #pragma config(UART_Usage, UART1, uartVEXLCD, baudRate19200, IOPins, None, None)
 #pragma config(I2C_Usage, I2C1, i2cSensors)
-#pragma config(Sensor, in1,    gyro,           sensorGyro)
-#pragma config(Sensor, dgtl1,  dr4bLeft,       sensorQuadEncoder)
-#pragma config(Sensor, dgtl3,  dr4bRight,      sensorQuadEncoder)
-#pragma config(Sensor, dgtl5,  mobileTouchTouch, sensorTouch)
-#pragma config(Sensor, dgtl6,  leftMogo,       sensorQuadEncoder)
-#pragma config(Sensor, dgtl8,  rightMogo,      sensorQuadEncoder)
+#pragma config(Sensor, in8,    rightMogo,      sensorPotentiometer)
+#pragma config(Sensor, dgtl1,  backLeftDrive,  sensorQuadEncoder)
+#pragma config(Sensor, dgtl5,  drfbLeft,       sensorQuadEncoder)
+#pragma config(Sensor, dgtl9,  backRightDrive, sensorQuadEncoder)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Sensor, I2C_2,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Sensor, I2C_3,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
@@ -13,10 +11,10 @@
 #pragma config(Motor,  port1,           mobileBoiBaseR, tmotorVex393_HBridge, openLoop)
 #pragma config(Motor,  port2,           backRightDrive, tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           frontRightDrive, tmotorVex393_MC29, openLoop, reversed)
-#pragma config(Motor,  port4,            ,             tmotorVex393_MC29, openLoop, driveLeft, encoderPort, I2C_4)
+#pragma config(Motor,  port4,           coneIntake,    tmotorVex393_MC29, openLoop, reversed, driveLeft, encoderPort, I2C_4)
 #pragma config(Motor,  port5,            ,             tmotorVex393_MC29, openLoop, driveRight, encoderPort, I2C_1)
-#pragma config(Motor,  port6,            ,             tmotorVex393_MC29, openLoop, driveLeft, encoderPort, I2C_3)
-#pragma config(Motor,  port7,            ,             tmotorVex393_MC29, openLoop, driveRight, encoderPort, I2C_2)
+#pragma config(Motor,  port6,           top,           tmotorVex393_MC29, openLoop, driveLeft, encoderPort, I2C_3)
+#pragma config(Motor,  port7,           drFrBr,        tmotorVex393_MC29, openLoop, driveRight, encoderPort, I2C_2)
 #pragma config(Motor,  port8,           backLeftDrive, tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port9,           frontLeftDrive, tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port10,          mobileBoiBaseL, tmotorVex393_HBridge, openLoop)
@@ -61,9 +59,11 @@ int lcdyeeMode = 0, leftDrive = 0, rightDrive = 0, mogoLift = 0, drFrBrBaseVal =
 float kP = .2, fRSpeed = 124., fLSpeed = 124., rMod = 0., error = 0.;
 
 //~~~~~~~sensor functions~~~~~~~\\
-void potentiomReset() {
-	//SensorValue[leftBackDrivePot] = 0;
-	//SensorValue[rightBackDrivePot] = 0;
+void potReset() {
+	SensorValue[rightMogo] = 0;
+	SensorValue[backLeftDrive] = 0;
+	SensorValue[drfbLeft] = 0;
+	SensorValue[backRightDrive] = 0;
 }
 void imeReset(){
   nMotorEncoder[frontLeftDrive] = 0;
@@ -78,9 +78,9 @@ void autonAddition(){
 	autonomousIMEtotalBR += nMotorEncoder[backRightDrive];
 	imeReset();
 }
-void resetGyro(){
+/* void resetGyro(){
 	SensorValue[gyro] = 0;
-}
+} */
 
 //~~~~~~~~~~~LCD_functions~~~~~~~~~~~~\\
 void clearLCD(){
@@ -201,7 +201,29 @@ void stopDTyMobi(){
 	motor[mobileBoiBaseR] = 0;
 	leftDrive = 0; rightDrive = 0; mogoLift = 0;
 }
-
+void mogoLiftPipe(){
+		while (SensorValue[rightMogo] <=880) {
+	motor[mobileBoiBaseL]=-127;
+	motor[mobileBoiBaseR]=-127;
+		}
+stopDTyMobi();
+}
+void stopDrfb () {
+	motor[drFrBr]=0; 
+	}
+void Fullextenddrfb(){
+	while (SensorValue[drfbLeft] <=95) {
+	motor[drFrBr]=127;
+		}
+stopDrfb();
+}
+void mogoLiftDown(){
+		while (SensorValue[rightMogo] <=1580) {
+	motor[mobileBoiBaseL]=-127;
+	motor[mobileBoiBaseR]=-127;
+		}
+stopDTyMobi();
+}
 void driveDosBouysAuton(string motot1, string motot2, int driveType, int tdelay, int speedyBoi){
 	//0 corresponds to stop, 1 corresonds to forward, 2 corresponds to backwards
 	switch(driveType){
@@ -240,7 +262,11 @@ task autonomous()
 
 	//initial setup
 	imeReset();
+	potReset();
+	mogoliftPipe();
+	Fullextenddrfb();
 
+	/*
 	//open mobile lift and   d r i v e   a tiny bit
 	while ((abs(nMotorEncoder[frontLeftDrive])<=500 || abs(nMotorEncoder[frontRightDrive])) <= 500){
 		driveForward(127,10);
@@ -269,7 +295,7 @@ task autonomous()
 
 	while (SensorValue[backLeftDrive] && SensorValue[frontRightDrive] < 600){
 		driveBackwards(rightAutonSpeed, 0);
-	}
+	} */
 }
 
 /*---------------------------------------------------------------------------*/
@@ -282,7 +308,6 @@ task autonomous()
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-//no u, finna dab
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -295,7 +320,6 @@ task autonomous()
 /*---------------------------------------------------------------------------*/
 task usercontrol()
 {
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LCD_FUNCTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 	/*SensorValue[gyro] = 0;
 	SensorFullCount[gyro] = 3600;*/
@@ -371,38 +395,33 @@ task usercontrol()
 //~~~~~~~~~~~~~~~~~~~~~~driver_2~~~~~~~~~~~~~~~~~~~~~~~//
 
 		//Cone intake control
-		if(vexRT [Btn5UXmtr2]==1){
+		if(vexRT [Btn6UXmtr2]==1){
 			coneIntakeVal = 1;
-			//motor[coneIntake] = 127;
+			motor[coneIntake] = 50;
 		}
-		else if(vexRT [Btn5DXmtr2]==1) {
+		else if(vexRT [Btn6DXmtr2]==1) {
 			coneIntakeVal = 2;
-	    //		motor[coneIntake] = -127;
-		}
-		else if(coneIntakeVal == 1 || 2){
-			coneIntakeVal = 0;
-			//motor[coneIntake] = 0;
+	    		motor[coneIntake] = -50;
 		}
 
 		//Drive fourbar base (motors y'd)
-/*		if(abs(vexRT[Ch2Xmtr2]) > threshold){
+		if(abs(vexRT[Ch2Xmtr2]) > threshold){
 			if (vexRT[Ch2Xmtr2] > 0){ drFrBrBaseVal = 1; }else{ drFrBrBaseVal = 2; }
-			motor[drFrBrBase] = vexRT[Ch2Xmtr2]; motor[drFrBrBase2] = vexRT[Ch2Xmtr2];
+			motor[drFrBr] = vexRT[Ch2Xmtr2];
 		}
 		else{
 			drFrBrBaseVal = 0;
-			motor[drFrBrBase] = 0;
+			motor[drFrBr] = 0;
 		}
 
 		//Top bois
 		if(abs(vexRT[Ch3Xmtr2]) > threshold){
 			if (vexRT[Ch3Xmtr2] > 0){ drFrBrTop = 1; }else{ drFrBrTop = 2; }
-			motor[leftTop] = vexRT[Ch3Xmtr2]; motor[rightTop] = vexRT[Ch3Xmtr2];
+			motor[top] = vexRT[Ch3Xmtr2];
 		}
 		else{
 			drFrBrTop = 0;
-			motor[leftTop] = 0; motor[rightTop] = 0;
+			motor[top] = 0;
 		}
-} */
 }
 }
