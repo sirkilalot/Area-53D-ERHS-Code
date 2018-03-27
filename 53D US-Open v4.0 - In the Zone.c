@@ -209,16 +209,16 @@ void mogoLiftPipe(){
 stopDTyMobi();
 }
 void stopDrfb () {
-	motor[drFrBr]=0; 
+	motor[drFrBr]=0;
 	}
-void Fullextenddrfb(){
-	while (SensorValue[drfbLeft] <=95) {
+void drfbFull(){
+	while (SensorValue[drfbLeft] <=82) {
 	motor[drFrBr]=127;
 		}
 stopDrfb();
 }
 void mogoLiftDown(){
-		while (SensorValue[rightMogo] <=1580) {
+		while (SensorValue[rightMogo] <=1350) { //1495
 	motor[mobileBoiBaseL]=-127;
 	motor[mobileBoiBaseR]=-127;
 		}
@@ -263,8 +263,8 @@ task autonomous()
 	//initial setup
 	imeReset();
 	potReset();
-	mogoliftPipe();
-	Fullextenddrfb();
+  drfbFull();
+	mogoLiftDown();
 
 	/*
 	//open mobile lift and   d r i v e   a tiny bit
