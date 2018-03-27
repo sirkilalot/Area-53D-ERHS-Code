@@ -1,5 +1,6 @@
 #pragma config(UART_Usage, UART1, uartVEXLCD, baudRate19200, IOPins, None, None)
 #pragma config(I2C_Usage, I2C1, i2cSensors)
+#pragma config(Sensor, in7,    AutoSelect,     sensorPotentiometer)
 #pragma config(Sensor, in8,    rightMogo,      sensorPotentiometer)
 #pragma config(Sensor, dgtl1,  backLeftDrive,  sensorQuadEncoder)
 #pragma config(Sensor, dgtl5,  drfbLeft,       sensorQuadEncoder)
@@ -261,60 +262,85 @@ void driveDosBouysAuton(string motot1, string motot2, int driveType, int tdelay,
 /*---------------------------------------------------------------------------*/
 task autonomous()
 {
+	if(SensorValue[AutoSelect] <= 1350) //Main
+    {
 	imeReset();
 	potReset();
 	mogoLiftDown ();
 	drfbFull ();
-				while (SensorValue[backRightDrive] <= 1300){
+				while (SensorValue[backRightDrive] <= 1300){ //Drive forward
 	motor[backLeftDrive]=127;
 	motor[backRightDrive]=127;
 	motor[frontLeftDrive]=127;
 	motor[frontRightDrive]=127;
+	motor[drFrBr]=20;
 			}
 			stopDriveTrain();
 	motor[mobileBoiBaseL]=0;
 	motor[mobileBoiBaseR]=0;
 		delay(10);
 	mogoLiftup ();
-				while (SensorValue[backRightDrive] >= 50){
+				while (SensorValue[backRightDrive] >= 50){ //Drive backwards
 	motor[backLeftDrive]=-127;
 	motor[backRightDrive]=-127;
 	motor[frontLeftDrive]=-127;
 	motor[frontRightDrive]=-127;
+	motor[drFrBr]=20;
 			}
 		stopDriveTrain();
 		delay(10);
-						while (SensorValue[backRightDrive] <= 780){
+						while (SensorValue[backRightDrive] <= 780){ //Turn
 	motor[backLeftDrive]=-127;
 	motor[backRightDrive]=127;
 	motor[frontLeftDrive]=-127;
 	motor[frontRightDrive]=127;
+	motor[drFrBr]=20;
 			}
 	stopDriveTrain();
 		delay(10);
-						while (SensorValue[backRightDrive] <= 950){
+						while (SensorValue[backRightDrive] <= 950){ //Forward
 	motor[backLeftDrive]=120;
 	motor[backRightDrive]=120;
 	motor[frontLeftDrive]=120;
 	motor[frontRightDrive]=120;
+	motor[drFrBr]=20;
 			}
 		stopDriveTrain();
 		delay(10);
-							while (SensorValue[rightMogo] >=-500) {
+							while (SensorValue[rightMogo] >=-500) { //Bring out Mogo
 	motor[mobileBoiBaseL]=-127;
 	motor[mobileBoiBaseR]=-127;
+	motor[drFrBr]=20;
 		}
 	motor[mobileBoiBaseL]=0;
 	motor[mobileBoiBaseR]=0;
 		delay(10);
-								while (SensorValue[backRightDrive] <= 0){
+								while (SensorValue[backRightDrive] <= 0){ //Back up
 	motor[backLeftDrive]=-127;
 	motor[backRightDrive]=127;
 	motor[frontLeftDrive]=-127;
 	motor[frontRightDrive]=127;
+	motor[drFrBr]=20;
 			}
 	stopDriveTrain();
 		delay(10);
+	}
+ else if(SensorValue[AutoSelect] >= 1350 && SensorValue[AutoSelect] <= 2550)
+    {
+	motor[backLeftDrive]=127;
+	motor[backRightDrive]=127;
+	motor[frontLeftDrive]=127;
+	motor[frontRightDrive]=127;
+	delay(12500)
+			}
+ else if(SensorValue[AutoSelect] >= 2550 && SensorValue[AutoSelect] <= 4095)
+    {
+	motor[backLeftDrive]=127;
+	motor[backRightDrive]=127;
+	motor[frontLeftDrive]=127;
+	motor[frontRightDrive]=127;
+	delay(12500)
+			}
 }
 
 /*---------------------------------------------------------------------------*/
