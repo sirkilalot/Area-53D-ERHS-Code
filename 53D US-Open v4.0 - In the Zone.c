@@ -212,10 +212,9 @@ stopDTyMobi();
 void stopDrfb () {
 	motor[drFrBr]=0;
 	}
-void drfbFull(int tdelay){
+void drfbFull(){
 	while (SensorValue[drfbLeft] <=82) {
 	motor[drFrBr]=127;
-	delay(tdelay);
 		}
 stopDrfb();
 }
@@ -265,6 +264,7 @@ task autonomous()
 	imeReset();
 	potReset();
 	mogoLiftDown ();
+	drfbFull ();
 				while (SensorValue[backRightDrive] <= 1300){
 	motor[backLeftDrive]=127;
 	motor[backRightDrive]=127;
@@ -315,43 +315,6 @@ task autonomous()
 			}
 	stopDriveTrain();
 		delay(10);
-	//notes
-	//takes ~554 ticks per wheel to cross a tile
-	//left side IEMs appear negative, right positive; just use abs
-	//takes ~584 ticks for the mogo lift to fully extend
-
-	//initial setup
-
-	/*
-	//open mobile lift and   d r i v e   a tiny bit
-	while ((abs(nMotorEncoder[frontLeftDrive])<=500 || abs(nMotorEncoder[frontRightDrive])) <= 500){
-		driveForward(127,10);
-		//mobileDrive(127, 1150);
-	}//   d a n i e l    s t o p    i t
-	stopDriveTrain(); mobileDrive(0, 100); autonAddition();
-
-	//spinnnnnnn
-	while ((nMotorEncoder[backLeftDrive]) && (nMotorEncoder[backRightDrive]) <= -200){
-		rightSpin(127,0);
-	}stopDriveTrain(); autonAddition();
-
-	while (SensorValue[mobileTouchTouch] != 1) {
-		if (abs(nMotorEncoder[frontLeftDrive]) || abs(nMotorEncoder[frontRightDrive]) >= 600){
-			error = nMotorEncoder[frontLeftDrive] - nMotorEncoder[frontRightDrive]; autonAddition();
-			rightAutonSpeed += error * kP; imeReset();
-			driveForward(rightAutonSpeed, 200);
-		}
-	}
-
-	//when touchy, do:
-	stopDTyMobi(); autonAddition();
-
-	//pull in mobile boi
-	mobileDrive(-127, 1250);
-
-	while (SensorValue[backLeftDrive] && SensorValue[frontRightDrive] < 600){
-		driveBackwards(rightAutonSpeed, 0);
-	} */
 }
 
 /*---------------------------------------------------------------------------*/
