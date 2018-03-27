@@ -1,5 +1,6 @@
 #pragma config(UART_Usage, UART1, uartVEXLCD, baudRate19200, IOPins, None, None)
 #pragma config(I2C_Usage, I2C1, i2cSensors)
+#pragma config(Sensor, in1,    BATERY_2_PORT,  sensorAnalog)
 #pragma config(Sensor, in7,    AutoSelect,     sensorPotentiometer)
 #pragma config(Sensor, in8,    rightMogo,      sensorPotentiometer)
 #pragma config(Sensor, dgtl1,  backLeftDrive,  sensorQuadEncoder)
@@ -366,19 +367,44 @@ task autonomous()
 task usercontrol()
 {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LCD_FUNCTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-	/*SensorValue[gyro] = 0;
-	SensorFullCount[gyro] = 3600;*/
-
-	imeReset();
-	int X1 = 0, Y2 = 0, threshold = 25; //Set Integer Variables
-
-	clearLCD();
-	startTask( lcdSet );
-	startTask( menuSwitch );
-
-	while (1==1)
+string mainBattery, backupBattery; //Set up Variables "mainBattery" "backupBattery"
+bLCDBacklight = true; //Turn on the Backlight in the LCD
+	int X1 = 0, X2 = 0, Y1 = 0, Y2 = 0, threshold = 5; //Set Integer Variables
+	while (1==1) //Infinite Loop
 	{
+		clearLCDLine(0); //Clears the Top Section of the Display
+ clearLCDLine(1); //Clears the Bottom Section of the Display
+if(SensorValue[AutoSelect] <= 400)
+		{
+			displayLCDCenteredString(0, "Autonomous:"); //Display "Autonomous:" on the Top Line
+			displayLCDCenteredString(1, "MGLb"); //Display the Autonomous on the Top Line
+		}
+else if(SensorValue[AutoSelect] > 400 && SensorValue[AutoSelect] <1400)
+		{
+			displayLCDCenteredString(0, "Autonomous:"); //Display "Autonomous:" on the Top Line
+			displayLCDCenteredString(1, "MGRr"); //Display the Autonomous on the Top Line
+		}
+else if(SensorValue[AutoSelect] >= 1400 && SensorValue[AutoSelect] <2300)
+		{
+			displayLCDCenteredString(0, "Autonomous:"); //Display "Autonomous:" on the Top Line
+			displayLCDCenteredString(1, "SGC"); //Display the Autonomous on the Top Line
+		}
+else if(SensorValue[AutoSelect] >= 2300)
+		{
+//Display the Primary Robot battery voltage
+displayLCDString(0, 0, "Primary: ");
+sprintf(mainBattery, "%1.2f%c", nImmediateBatteryLevel/1000.0,'V'); //Build the Value to be Displayed
+displayNextLCDString(mainBattery);
 
+int battery2Level = (int)((float)SensorValue[ BATERY_2_PORT ] * 5.48);
+
+
+//Display the Backup battery voltage
+displayLCDString(1, 0, "Backup: ");
+sprintf(backupBattery, "%1.2f%c", battery2Level, 'V');    //Build the Value to be Displayed
+displayNextLCDString(backupBattery);
+//wait1Msec(200);
+}
 //~~~~~~~~~~~~~~~~~~Drivetrain PID~~~~~~~~~~~~~~~~~~~~~//
 
 		//front alignment check every 600 ticks, calculate error
