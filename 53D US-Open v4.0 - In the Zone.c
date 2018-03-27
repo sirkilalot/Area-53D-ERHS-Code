@@ -201,19 +201,21 @@ void stopDTyMobi(){
 	motor[mobileBoiBaseR] = 0;
 	leftDrive = 0; rightDrive = 0; mogoLift = 0;
 }
-void mogoLiftPipe(){
+void mogoLiftPipe(int tdelay){
 		while (SensorValue[rightMogo] <=880) {
 	motor[mobileBoiBaseL]=-127;
 	motor[mobileBoiBaseR]=-127;
+	delay(tdelay);
 		}
 stopDTyMobi();
 }
 void stopDrfb () {
 	motor[drFrBr]=0;
 	}
-void drfbFull(){
+void drfbFull(int tdelay){
 	while (SensorValue[drfbLeft] <=82) {
 	motor[drFrBr]=127;
+	delay(tdelay);
 		}
 stopDrfb();
 }
@@ -239,8 +241,6 @@ void driveDosBouysAuton(string motot1, string motot2, int driveType, int tdelay,
 	}
 	delay(tdelay);
 }
-
-//~~~~~~~~~~LCD_Setup~~~~~~~~~~~\\
 
 
 
