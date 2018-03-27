@@ -374,22 +374,22 @@ bLCDBacklight = true; //Turn on the Backlight in the LCD
 	{
 		clearLCDLine(0); //Clears the Top Section of the Display
  clearLCDLine(1); //Clears the Bottom Section of the Display
-if(SensorValue[AutoSelect] <= 400)
+if(SensorValue[AutoSelect] <= 1350)
 		{
 			displayLCDCenteredString(0, "Autonomous:"); //Display "Autonomous:" on the Top Line
 			displayLCDCenteredString(1, "MGLb"); //Display the Autonomous on the Top Line
 		}
-else if(SensorValue[AutoSelect] > 400 && SensorValue[AutoSelect] <1400)
+else if(SensorValue[AutoSelect] >= 1350 && SensorValue[AutoSelect] <= 2550)
 		{
 			displayLCDCenteredString(0, "Autonomous:"); //Display "Autonomous:" on the Top Line
-			displayLCDCenteredString(1, "MGRr"); //Display the Autonomous on the Top Line
+			displayLCDCenteredString(1, "Defense"); //Display the Autonomous on the Top Line
 		}
-else if(SensorValue[AutoSelect] >= 1400 && SensorValue[AutoSelect] <2300)
+else if(SensorValue[AutoSelect] >= 2550 && SensorValue[AutoSelect] <= 3500)
 		{
 			displayLCDCenteredString(0, "Autonomous:"); //Display "Autonomous:" on the Top Line
 			displayLCDCenteredString(1, "SGC"); //Display the Autonomous on the Top Line
 		}
-else if(SensorValue[AutoSelect] >= 2300)
+else if(SensorValue[AutoSelect] >= 3500)
 		{
 //Display the Primary Robot battery voltage
 displayLCDString(0, 0, "Primary: ");
