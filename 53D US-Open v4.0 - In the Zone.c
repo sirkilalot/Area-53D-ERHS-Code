@@ -147,12 +147,12 @@ task menuSwitch(){
 
 
 //~~~~~~~auton driving functions~~~~~~~\\
-void driveForward (int rSpeed, int tdelay){
+void driveForward (int tdelay){
 	motor [frontLeftDrive] = 127;
-	motor [frontRightDrive] = rSpeed;
+	motor [frontRightDrive] = 127;
 	motor [backLeftDrive] = 127;
-	motor [backRightDrive] = rSpeed;
-	delay(tdelay); leftDrive = 1; rightDrive = 1;
+	motor [backRightDrive] = 127;
+	delay(tdelay);
 }
 void rightSpin (int mPower, int tdelay){
 	motor [frontLeftDrive] = mPower;
@@ -226,6 +226,13 @@ void mogoLiftDown(){
 		}
 stopDTyMobi();
 }
+void mogoLiftup(){
+		while (SensorValue[rightMogo] >=0) {
+	motor[mobileBoiBaseL]=127;
+	motor[mobileBoiBaseR]=127;
+		}
+stopDTyMobi();
+}
 void driveDosBouysAuton(string motot1, string motot2, int driveType, int tdelay, int speedyBoi){
 	//0 corresponds to stop, 1 corresonds to forward, 2 corresponds to backwards
 	switch(driveType){
@@ -255,16 +262,65 @@ void driveDosBouysAuton(string motot1, string motot2, int driveType, int tdelay,
 /*---------------------------------------------------------------------------*/
 task autonomous()
 {
+	imeReset();
+	potReset();
+	mogoLiftDown ();
+				while (SensorValue[backRightDrive] <= 1300){
+	motor[backLeftDrive]=127;
+	motor[backRightDrive]=127;
+	motor[frontLeftDrive]=127;
+	motor[frontRightDrive]=127;
+			}
+			stopDriveTrain();
+	motor[mobileBoiBaseL]=0;
+	motor[mobileBoiBaseR]=0;
+		delay(10);
+	mogoLiftup ();
+				while (SensorValue[backRightDrive] >= 50){
+	motor[backLeftDrive]=-127;
+	motor[backRightDrive]=-127;
+	motor[frontLeftDrive]=-127;
+	motor[frontRightDrive]=-127;
+			}
+		stopDriveTrain();
+		delay(10);
+						while (SensorValue[backRightDrive] <= 780){
+	motor[backLeftDrive]=-127;
+	motor[backRightDrive]=127;
+	motor[frontLeftDrive]=-127;
+	motor[frontRightDrive]=127;
+			}
+	stopDriveTrain();
+		delay(10);
+						while (SensorValue[backRightDrive] <= 950){
+	motor[backLeftDrive]=120;
+	motor[backRightDrive]=120;
+	motor[frontLeftDrive]=120;
+	motor[frontRightDrive]=120;
+			}
+		stopDriveTrain();
+		delay(10);
+							while (SensorValue[rightMogo] >=-500) {
+	motor[mobileBoiBaseL]=-127;
+	motor[mobileBoiBaseR]=-127;
+		}
+	motor[mobileBoiBaseL]=0;
+	motor[mobileBoiBaseR]=0;
+		delay(10);
+								while (SensorValue[backRightDrive] <= 0){
+	motor[backLeftDrive]=-127;
+	motor[backRightDrive]=127;
+	motor[frontLeftDrive]=-127;
+	motor[frontRightDrive]=127;
+			}
+	stopDriveTrain();
+		delay(10);
 	//notes
 	//takes ~554 ticks per wheel to cross a tile
 	//left side IEMs appear negative, right positive; just use abs
 	//takes ~584 ticks for the mogo lift to fully extend
 
 	//initial setup
-	imeReset();
-	potReset();
-  drfbFull();
-	mogoLiftDown();
 
 	/*
 	//open mobile lift and   d r i v e   a tiny bit
