@@ -88,8 +88,20 @@ void stopDTyMobi(){
 void stopDrfb () {
 	motor[drFrBr]=0;
 	}
-void drfbFull(){
+void drfbUp(){
 	while (SensorValue[drfbLeft] <=82) {
+	motor[drFrBr]=127;
+		}
+stopDrfb();
+}
+void drfbDown(){
+	while (SensorValue[drfbLeft] >=0) {
+	motor[drFrBr]=-127;
+		}
+stopDrfb();
+}
+void drfb1(){
+	while (SensorValue[drfbLeft] <=5) {
 	motor[drFrBr]=127;
 		}
 stopDrfb();
@@ -124,9 +136,11 @@ void rotateOut(){
 }
 void rotateStop(){
 	motor[coneIntake]=0;
+	delay(10);
 }
 void topStop(){
 	motor[top]=0;
+	delay(10);
 }
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -144,9 +158,10 @@ task autonomous()
 	imeReset();
 	potReset();
 	mogoLiftDown ();
-	drfbFull ();
+	drfbUp ();
 	topOut();
 	rotateIn();
+	rotateStop();
 				while (SensorValue[backRightDrive] <= 1300){ //Drive forward
 	motor[backLeftDrive]=127;
 	motor[backRightDrive]=127;
@@ -159,6 +174,12 @@ task autonomous()
 	motor[mobileBoiBaseR]=0;
 		delay(10);
 	mogoLiftup ();
+	drfbDown();
+	stopDrfb();
+	rotateStop();
+	drfb1();
+	topIn();
+	rotateOut();
 				while (SensorValue[backRightDrive] >= 50){ //Drive backwards
 	motor[backLeftDrive]=-127;
 	motor[backRightDrive]=-127;
