@@ -73,50 +73,12 @@ void imeReset(){
 	SensorValue[gyro] = 0;
 } */
 //~~~~~~~auton driving functions~~~~~~~
-void driveForward (int tdelay){
-	motor [frontLeftDrive] = 127;
-	motor [frontRightDrive] = 127;
-	motor [backLeftDrive] = 127;
-	motor [backRightDrive] = 127;
-	delay(tdelay);
-}
-void rightSpin (int mPower, int tdelay){
-	motor [frontLeftDrive] = mPower;
-	motor [frontRightDrive] = -mPower;
-	motor [backLeftDrive] = mPower;
-	motor [backRightDrive] = -mPower;
-	delay(tdelay); leftDrive = 1; rightDrive = 2;
-}
-void leftSpin (int mPower, int tdelay){
-	motor [frontLeftDrive] = -mPower;
-	motor [frontRightDrive] = mPower;
-	motor [backLeftDrive] = -mPower;
-	motor [backRightDrive] = mPower;
-	delay(tdelay); leftDrive = 2; rightDrive = 1;
-}
-void driveTrainLeft(int mPower, int tdelay){
-	motor[frontLeftDrive] = mPower;
-	motor[backLeftDrive] = mPower;
-	delay(tdelay);
-}
-void driveBackwards (int rSpeed, int tdelay){
-	motor [frontLeftDrive] = -127;
-	motor [frontRightDrive] = -1 * rSpeed;
-	motor [backLeftDrive] = -127;
-	motor [backRightDrive] = -1 * rSpeed;
-	delay(tdelay); leftDrive = 2; rightDrive = 2;
-}
 void stopDriveTrain (){
 	motor [frontLeftDrive] = 0;
 	motor [frontRightDrive] = 0;
 	motor [backLeftDrive] = 0;
 	motor [backRightDrive] = 0;
 	leftDrive = 0; rightDrive = 0;
-}
-void mobileDrive (int mPower, int tdelay){
-	motor [mobileBoiBaseL] = mPower;
-	motor [mobileBoiBaseR] = mPower;
-	delay(tdelay);
 }
 void stopDTyMobi(){
 	motor[frontLeftDrive] = 0;
@@ -126,14 +88,6 @@ void stopDTyMobi(){
 	motor[mobileBoiBaseL] = 0;
 	motor[mobileBoiBaseR] = 0;
 	leftDrive = 0; rightDrive = 0; mogoLift = 0;
-}
-void mogoLiftPipe(int tdelay){
-		while (SensorValue[rightMogo] <=880) {
-	motor[mobileBoiBaseL]=-127;
-	motor[mobileBoiBaseR]=-127;
-	delay(tdelay);
-		}
-stopDTyMobi();
 }
 void stopDrfb () {
 	motor[drFrBr]=0;
@@ -157,21 +111,6 @@ void mogoLiftup(){
 	motor[mobileBoiBaseR]=127;
 		}
 stopDTyMobi();
-}
-void driveDosBouysAuton(string motot1, string motot2, int driveType, int tdelay, int speedyBoi){
-	//0 corresponds to stop, 1 corresonds to forward, 2 corresponds to backwards
-	switch(driveType){
-		case(0):
-			motor[motot1] = speedyBoi;
-			motor[motot2] = speedyBoi;
-		case(1):
-			motor[motot1] = speedyBoi;
-			motor[motot2] = speedyBoi;
-		case(2):
-			motor[motot1] = speedyBoi;
-			motor[motot2] = speedyBoi;
-	}
-	delay(tdelay);
 }
 
 
