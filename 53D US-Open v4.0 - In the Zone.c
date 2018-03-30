@@ -68,10 +68,6 @@ void imeReset(){
   nMotorEncoder[backLeftDrive] = 0;
   nMotorEncoder[backRightDrive] = 0;
 }
-
-/* void resetGyro(){
-	SensorValue[gyro] = 0;
-} */
 //~~~~~~~auton driving functions~~~~~~~
 void stopDriveTrain (){
 	motor [frontLeftDrive] = 0;
@@ -112,9 +108,26 @@ void mogoLiftup(){
 		}
 stopDTyMobi();
 }
-
-
-
+void topOut(){
+	motor[top]=127;
+	delay(200);
+}
+void topIn(){
+	motor[top]=-127;
+	delay(200);
+}
+void rotateIn(){
+	motor[coneIntake]=127;
+}
+void rotateOut(){
+	motor[coneIntake]=-127;
+}
+void rotateStop(){
+	motor[coneIntake]=0;
+}
+void topStop(){
+	motor[top]=0;
+}
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              Autonomous Task                              */
@@ -132,6 +145,8 @@ task autonomous()
 	potReset();
 	mogoLiftDown ();
 	drfbFull ();
+	topOut();
+	rotateIn();
 				while (SensorValue[backRightDrive] <= 1300){ //Drive forward
 	motor[backLeftDrive]=127;
 	motor[backRightDrive]=127;
@@ -191,7 +206,7 @@ task autonomous()
 	}
  else if(SensorValue[AutoSelect] >= 1350 && SensorValue[AutoSelect] <= 2550)
     {
-	motor[backLeftDrive]=127;
+	motor[backLeftDrive]=127;  //Drive forward
 	motor[backRightDrive]=127;
 	motor[frontLeftDrive]=127;
 	motor[frontRightDrive]=127;
@@ -206,18 +221,6 @@ task autonomous()
 	delay(12500);
 			}
 }
-
-/*---------------------------------------------------------------------------*/
-/*                                                                           */
-/*                              Tasks                                        */
-/*                                                                           */
-/*  This task is used to control stacking robot during the user control      */
-/*   phase of a VEX Competition.                                             */
-/*                                                                           */
-/*  You must modify the code to add your own robot specific commands here.   */
-/*---------------------------------------------------------------------------*/
-
-
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              User Control Task                            */
@@ -326,7 +329,7 @@ displayNextLCDString(backupBattery);
 			imeReset();
 		}
 
-//~~~~~~~~~~~~~~~~~~~~~~driver_2~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~Diver_2~~~~~~~~~~~~~~~~~~~~~~~//
 
 		//Cone intake control
 		if(vexRT [Btn6UXmtr2]==1){
