@@ -49,7 +49,6 @@ void pre_auton()
 	bStopTasksBetweenModes = true;
 }
 //declare auton variables
-//int rightAutonSpeed = 125;	int leftAutonSpeed = 125;
 //declaration of drive values: 0 is stopped, 1 is driving forward, 2 is driving backwards
 int  leftDrive = 0, rightDrive = 0, mogoLift = 0, drFrBrBaseVal = 0, drFrBrTop = 0, coneIntakeVal = 0;
 //declaration of numerical operands for functions and IMEs
@@ -285,8 +284,8 @@ displayNextLCDString(mainBattery);
 
 int battery2Level = (int)((float)SensorValue[ BATERY_2_PORT ] * 5.48);
 
-
 //Display the Backup battery voltage
+
 displayLCDString(1, 0, "Backup: ");
 sprintf(backupBattery, "%1.2f%c", battery2Level, 'V');    //Build the Value to be Displayed
 displayNextLCDString(backupBattery);
@@ -350,7 +349,7 @@ displayNextLCDString(backupBattery);
 			imeReset();
 		}
 
-//~~~~~~~~~~~~~~~~~~~~~~Diver_2~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~Driver_Control_Controller_2~~~~~~~~~~~~~~~~~~~~~~~//
 
 		//Cone intake control
 		if(vexRT [Btn6UXmtr2]==1){
