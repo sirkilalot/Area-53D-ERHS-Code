@@ -355,12 +355,15 @@ displayNextLCDString(backupBattery);
 		//Cone intake control
 		if(vexRT [Btn6UXmtr2]==1){
 			coneIntakeVal = 1;
-			motor[coneIntake] = 50;
-		}
+			motor[coneIntake] = 100;
+}
 		else if(vexRT [Btn6DXmtr2]==1) {
 			coneIntakeVal = 2;
-	    		motor[coneIntake] = -50;
+	    		motor[coneIntake] = -100;
 		}
+		else{
+		motor[coneIntake]=0;
+	}
 
 		//Drive fourbar base (motors y'd)
 		if(abs(vexRT[Ch2Xmtr2]) > threshold){
