@@ -44,6 +44,7 @@
 /*  function is only called once after the cortex has been powered on and    */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
+
 void pre_auton()
 {
 	bStopTasksBetweenModes = true;
@@ -141,6 +142,7 @@ void stopTop(){
 	motor[top]=0;
 	delay(10);
 }
+
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              Autonomous Task                              */
@@ -150,6 +152,7 @@ void stopTop(){
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
+
 task autonomous()
 {
 	if(SensorValue[AutoSelect] <= 1350) //Main
@@ -241,6 +244,7 @@ task autonomous()
 	delay(12500);
 			}
 }
+
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              User Control Task                            */
@@ -250,9 +254,12 @@ task autonomous()
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
+
 task usercontrol()
 {
+	
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LCD_FUNCTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
 string mainBattery, backupBattery; //Set up Variables "mainBattery" "backupBattery"
 bLCDBacklight = true; //Turn on the Backlight in the LCD
 	int X1 = 0, Y2 = 0, threshold = 5; //Set Integer Variables
@@ -291,6 +298,7 @@ sprintf(backupBattery, "%1.2f%c", battery2Level, 'V');    //Build the Value to b
 displayNextLCDString(backupBattery);
 //wait1Msec(200);
 }
+
 //~~~~~~~~~~~~~~~~~~Drivetrain PID~~~~~~~~~~~~~~~~~~~~~//
 
 		//front alignment check every 600 ticks, calculate error
@@ -301,6 +309,7 @@ displayNextLCDString(backupBattery);
 		}
 
 //~~~~~~~~~~~~~~~~~~~~~~~Driver_Control_Controller_1~~~~~~~~~~~~~~~~~~~~~~~~~//
+		
 	  //if right joystick up || down
 		if(abs(vexRT[Ch2]) > threshold){
 			if(vexRT[Ch2] < 0){
