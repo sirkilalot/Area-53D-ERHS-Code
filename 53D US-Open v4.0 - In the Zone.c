@@ -138,7 +138,7 @@ void rotateStop(){
 	motor[coneIntake]=0;
 	delay(10);
 }
-void topStop(){
+void stopTop(){
 	motor[top]=0;
 	delay(10);
 }
@@ -179,6 +179,7 @@ task autonomous()
 	rotateStop();
 	drfb1();
 	topIn();
+	stopTop();
 	rotateOut();
 				while (SensorValue[backRightDrive] >= 50){ //Drive backwards
 	motor[backLeftDrive]=-127;
