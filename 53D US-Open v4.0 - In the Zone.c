@@ -161,7 +161,6 @@ task autonomous()
 	drfbUp ();
 	topOut();
 	rotateIn();
-	rotateStop();
 				while (SensorValue[backRightDrive] <= 1300){ //Drive forward
 	motor[backLeftDrive]=127;
 	motor[backRightDrive]=127;
