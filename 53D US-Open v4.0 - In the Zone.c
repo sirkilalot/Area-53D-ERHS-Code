@@ -1,6 +1,7 @@
 #pragma config(UART_Usage, UART1, uartVEXLCD, baudRate19200, IOPins, None, None)
 #pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, in1,    BATERY_2_PORT,  sensorAnalog)
+#pragma config(Sensor, in6,    TopPot,         sensorPotentiometer)
 #pragma config(Sensor, in7,    AutoSelect,     sensorPotentiometer)
 #pragma config(Sensor, in8,    rightMogo,      sensorPotentiometer)
 #pragma config(Sensor, dgtl1,  backLeftDrive,  sensorQuadEncoder)
@@ -63,13 +64,13 @@ void potReset() {
 	SensorValue[backRightDrive] = 0;
 }
 void imeReset(){
-  nMotorEncoder[frontLeftDrive] = 0;
-  nMotorEncoder[frontRightDrive] = 0;
-  nMotorEncoder[backLeftDrive] = 0;
-  nMotorEncoder[backRightDrive] = 0;
+	nMotorEncoder[frontLeftDrive] = 0;
+	nMotorEncoder[frontRightDrive] = 0;
+	nMotorEncoder[backLeftDrive] = 0;
+	nMotorEncoder[backRightDrive] = 0;
 }
 //~~~~~~~auton driving functions~~~~~~~
-void stopDriveTrain (){
+void stopDriveTrain(){
 	motor [frontLeftDrive] = 0;
 	motor [frontRightDrive] = 0;
 	motor [backLeftDrive] = 0;
@@ -87,38 +88,38 @@ void stopDTyMobi(){
 }
 void stopDrfb () {
 	motor[drFrBr]=0;
-	}
+}
 void drfbUp(){
-	while (SensorValue[drfbLeft] <=82) {
-	motor[drFrBr]=127;
-		}
-stopDrfb();
+	while (SensorValue[drfbLeft] <=22) {
+		motor[drFrBr]=127;
+	}
+	stopDrfb();
 }
 void drfbDown(){
 	while (SensorValue[drfbLeft] >=0) {
-	motor[drFrBr]=-127;
-		}
-stopDrfb();
+		motor[drFrBr]=-127;
+	}
+	stopDrfb();
 }
 void drfb1(){
 	while (SensorValue[drfbLeft] <=5) {
-	motor[drFrBr]=127;
-		}
-stopDrfb();
+		motor[drFrBr]=127;
+	}
+	stopDrfb();
 }
 void mogoLiftDown(){
-		while (SensorValue[rightMogo] <=1350) { //1495
-	motor[mobileBoiBaseL]=-127;
-	motor[mobileBoiBaseR]=-127;
-		}
-stopDTyMobi();
+	 //1495
+		motor[mobileBoiBaseL]=-127;
+		motor[mobileBoiBaseR]=-127;
+		delay(1100);
+	stopDTyMobi();
 }
 void mogoLiftup(){
-		while (SensorValue[rightMogo] >=0) {
-	motor[mobileBoiBaseL]=127;
-	motor[mobileBoiBaseR]=127;
-		}
-stopDTyMobi();
+	while (SensorValue[rightMogo] >0) {
+		motor[mobileBoiBaseL]=127;
+		motor[mobileBoiBaseR]=127;
+	}
+	stopDTyMobi();
 }
 void topOut(){
 	motor[top]=127;
@@ -155,94 +156,277 @@ void stopTop(){
 
 task autonomous()
 {
-	if(SensorValue[AutoSelect] <= 1350) //Main
-    {
-	imeReset();
-	potReset();
-	mogoLiftDown ();
-	drfbUp ();
-	topOut();
-	rotateIn();
-				while (SensorValue[backRightDrive] <= 1300){ //Drive forward
-	motor[backLeftDrive]=127;
-	motor[backRightDrive]=127;
-	motor[frontLeftDrive]=127;
-	motor[frontRightDrive]=127;
-	motor[drFrBr]=20;
-			}
-			stopDriveTrain();
-	motor[mobileBoiBaseL]=0;
-	motor[mobileBoiBaseR]=0;
-		delay(10);
-	mogoLiftup ();
-	drfbDown();
-	stopDrfb();
-	rotateStop();
-	drfb1();
-	topIn();
-	stopTop();
-	rotateOut();
-				while (SensorValue[backRightDrive] >= 50){ //Drive backwards
-	motor[backLeftDrive]=-127;
-	motor[backRightDrive]=-127;
-	motor[frontLeftDrive]=-127;
-	motor[frontRightDrive]=-127;
-	motor[drFrBr]=20;
-			}
-		stopDriveTrain();
-		delay(10);
-						while (SensorValue[backRightDrive] <= 780){ //Turn
-	motor[backLeftDrive]=-127;
-	motor[backRightDrive]=127;
-	motor[frontLeftDrive]=-127;
-	motor[frontRightDrive]=127;
-	motor[drFrBr]=20;
-			}
-	stopDriveTrain();
-		delay(10);
-						while (SensorValue[backRightDrive] <= 950){ //Forward
-	motor[backLeftDrive]=120;
-	motor[backRightDrive]=120;
-	motor[frontLeftDrive]=120;
-	motor[frontRightDrive]=120;
-	motor[drFrBr]=20;
-			}
-		stopDriveTrain();
-		delay(10);
-							while (SensorValue[rightMogo] >=-500) { //Bring out Mogo
-	motor[mobileBoiBaseL]=-127;
-	motor[mobileBoiBaseR]=-127;
-	motor[drFrBr]=20;
+	if(SensorValue[AutoSelect] <= 1350) //LEFT SIDE 10 POINT
+{
+		imeReset();
+		potReset();
+		motor[coneIntake]=20;
+		motor[drFrBr]=127;
+		delay(600);
+		motor[drFrBr]=0;
+		while(SensorValue[rightMogo]<1510){
+		motor[mobileBoiBaseL]=-127;
+		motor[mobileBoiBaseR]=-127;
 		}
-	motor[mobileBoiBaseL]=0;
-	motor[mobileBoiBaseR]=0;
+	stopDTyMobi();
+		//topOut();
+
+		//Drive forward
+
+		motor[backLeftDrive]=127;
+		motor[backRightDrive]=127;
+		motor[frontLeftDrive]=127;
+		motor[frontRightDrive]=127;
+		motor[drFrBr]=20;
+		delay(3500);
+
+		stopDriveTrain();
+		motor[mobileBoiBaseL]=0;
+		motor[mobileBoiBaseR]=0;
 		delay(10);
-								while (SensorValue[backRightDrive] <= 0){ //Back up
-	motor[backLeftDrive]=-127;
-	motor[backRightDrive]=127;
-	motor[frontLeftDrive]=-127;
-	motor[frontRightDrive]=127;
-	motor[drFrBr]=20;
-			}
-	stopDriveTrain();
+		mogoLiftup();
+		stopDrfb();
+		rotateStop();
+		rotateOut();
+		motor[coneIntake]=0;
+		//Drive backwards
+			motor[backLeftDrive]=-127;
+			motor[backRightDrive]=-127;
+			motor[frontLeftDrive]=-127;
+			motor[frontRightDrive]=-127;
+			motor[drFrBr]=20;
+		delay(2500);
+		stopDriveTrain();
+		delay(10);
+		motor[top]=127;
+		delay(120);
+		motor[top]=0;
+		motor[drFrBr]=-127;
+		delay(400);
+		motor[coneIntake]=-127;
+		delay(200);
+		motor[drFrBr]=0;
+		delay(330);
+		motor[drFrBr]=127;
+		delay(300);
+		motor[coneIntake]=0;
+		motor[drFrBr]=0;
+		potReset();
+	//Turn
+			motor[backLeftDrive]=-127;
+			motor[backRightDrive]=127;
+			motor[frontLeftDrive]=-127;
+			motor[frontRightDrive]=127;
+			motor[drFrBr]=-17;
+		delay(1200);
+		stopDriveTrain();
+		delay(10);
+		 //Forward
+			motor[backLeftDrive]=120;
+			motor[backRightDrive]=45;
+			motor[frontLeftDrive]=120;
+			motor[frontRightDrive]=45;
+
+		delay(1500);
+		stopDriveTrain();
+		delay(10);
+		mogoLiftDown();
+
+		motor[mobileBoiBaseL]=0;
+		motor[mobileBoiBaseR]=0;
+		delay(10);
+		 //Back up
+			motor[backLeftDrive]=-127;
+			motor[backRightDrive]=-127;
+			motor[frontLeftDrive]=-127;
+			motor[frontRightDrive]=-127;
+
+		delay(1200);
+		stopDriveTrain();
+		motor[drFrBr]=0;
+		delay(10);
+
+	}
+
+	else if(SensorValue[AutoSelect] > 1350 && SensorValue[AutoSelect] <= 2550) //RIGHT SIDE 10 POINT
+	{
+			imeReset();
+		potReset();
+		motor[coneIntake]=20;
+		motor[drFrBr]=127;
+		delay(600);
+		motor[drFrBr]=0;
+		while(SensorValue[rightMogo]<1510){
+		motor[mobileBoiBaseL]=-127;
+		motor[mobileBoiBaseR]=-127;
+		}
+			stopDTyMobi();
+		//topOut();
+
+		//Drive forward
+
+		motor[backLeftDrive]=127;
+		motor[backRightDrive]=127;
+		motor[frontLeftDrive]=127;
+		motor[frontRightDrive]=127;
+		motor[drFrBr]=20;
+		delay(3500);
+
+		stopDriveTrain();
+		motor[mobileBoiBaseL]=0;
+		motor[mobileBoiBaseR]=0;
+		delay(10);
+		mogoLiftup();
+		stopDrfb();
+		rotateStop();
+		rotateOut();
+		motor[coneIntake]=0;
+		//Drive backwards
+			motor[backLeftDrive]=-127;
+			motor[backRightDrive]=-127;
+			motor[frontLeftDrive]=-127;
+			motor[frontRightDrive]=-127;
+			motor[drFrBr]=20;
+		delay(2500);
+		stopDriveTrain();
+		delay(10);
+		motor[top]=127;
+		delay(120);
+		motor[top]=0;
+		motor[drFrBr]=-127;
+		delay(400);
+		motor[coneIntake]=-127;
+		delay(200);
+		motor[drFrBr]=0;
+		delay(330);
+		motor[drFrBr]=127;
+		delay(300);
+		motor[coneIntake]=0;
+		motor[drFrBr]=0;
+		potReset();
+	//Turn
+			motor[backLeftDrive]=-127;
+			motor[backRightDrive]=127;
+			motor[frontLeftDrive]=-127;
+			motor[frontRightDrive]=127;
+			motor[drFrBr]=-17;
+		delay(1200);
+		stopDriveTrain();
+		/*delay(10);
+		 //Forward
+			motor[backLeftDrive]=35;
+			motor[backRightDrive]=127;
+			motor[frontLeftDrive]=35;
+			motor[frontRightDrive]=127;
+
+		delay(1500);
+		stopDriveTrain();
+		delay(10);*/
+		mogoLiftDown();
+
+		motor[mobileBoiBaseL]=0;
+		motor[mobileBoiBaseR]=0;
+		delay(10);
+		 //Back up
+			motor[backLeftDrive]=-127;
+			motor[backRightDrive]=-127;
+			motor[frontLeftDrive]=-127;
+			motor[frontRightDrive]=-127;
+
+		delay(1200);
+		stopDriveTrain();
+		motor[drFrBr]=0;
 		delay(10);
 	}
- else if(SensorValue[AutoSelect] >= 1350 && SensorValue[AutoSelect] <= 2550)
-    {
-	motor[backLeftDrive]=127;  //Drive forward
-	motor[backRightDrive]=127;
-	motor[frontLeftDrive]=127;
-	motor[frontRightDrive]=127;
-	delay(12500);
-			}
- else if(SensorValue[AutoSelect] >= 2550 && SensorValue[AutoSelect] <= 4095)
-    {
-	motor[backLeftDrive]=127;
-	motor[backRightDrive]=127;
-	motor[frontLeftDrive]=127;
-	motor[frontRightDrive]=127;
-	delay(12500);
-			}
+	else if(SensorValue[AutoSelect] > 2550 && SensorValue[AutoSelect] <= 4095) //20 Point LEFT
+	{
+		imeReset();
+		potReset();
+		motor[coneIntake]=20;
+		motor[drFrBr]=127;
+		delay(500);
+		motor[drFrBr]=-17;
+		mogoLiftDown();
+		//topOut();
+
+		//Drive forward
+
+		motor[backLeftDrive]=127;
+		motor[backRightDrive]=127;
+		motor[frontLeftDrive]=127;
+		motor[frontRightDrive]=127;
+		motor[drFrBr]=20;
+		delay(3500);
+
+		stopDriveTrain();
+		motor[mobileBoiBaseL]=0;
+		motor[mobileBoiBaseR]=0;
+		mogoLiftup();
+		stopDrfb();
+		rotateStop();
+		rotateOut();
+		motor[coneIntake]=0;
+		//Drive backwards
+			motor[backLeftDrive]=-127;
+			motor[backRightDrive]=-127;
+			motor[frontLeftDrive]=-127;
+			motor[frontRightDrive]=-127;
+			motor[drFrBr]=20;
+		delay(2500);
+		stopDriveTrain();
+		motor[top]=127;
+		delay(120);
+		motor[top]=0;
+		motor[drFrBr]=-127;
+		delay(400);
+		motor[coneIntake]=-127;
+		delay(200);
+		motor[drFrBr]=0;
+		delay(330);
+		motor[drFrBr]=127;
+		delay(300);
+		motor[coneIntake]=0;
+		motor[drFrBr]=0;
+		potReset();
+	//Turn
+			motor[backLeftDrive]=-127;
+			motor[backRightDrive]=127;
+			motor[frontLeftDrive]=-127;
+			motor[frontRightDrive]=127;
+			motor[drFrBr]=-17;
+		delay(1400);
+		stopDriveTrain();
+		delay(10);
+		 //Forward
+			motor[backLeftDrive]=33;
+			motor[backRightDrive]=120;
+			motor[frontLeftDrive]=33;
+			motor[frontRightDrive]=120;
+		delay(1500);
+			motor[backLeftDrive]=80;
+			motor[backRightDrive]=80;
+			motor[frontLeftDrive]=80;
+			motor[frontRightDrive]=80;
+			delay(1000);
+		stopDriveTrain();
+		delay(10);
+		motor[mobileBoiBaseL]=-127;
+		motor[mobileBoiBaseR]=-127;
+		delay(780);
+
+		motor[mobileBoiBaseL]=0;
+		motor[mobileBoiBaseR]=0;
+		 //Back up
+			motor[backLeftDrive]=-127;
+			motor[backRightDrive]=-127;
+			motor[frontLeftDrive]=-127;
+			motor[frontRightDrive]=-127;
+
+		delay(1200);
+		stopDriveTrain();
+		motor[drFrBr]=0;
+		delay(10);
+	}
 }
 
 /*---------------------------------------------------------------------------*/
@@ -257,49 +441,49 @@ task autonomous()
 
 task usercontrol()
 {
-	
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LCD_FUNCTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-string mainBattery, backupBattery; //Set up Variables "mainBattery" "backupBattery"
-bLCDBacklight = true; //Turn on the Backlight in the LCD
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LCD_FUNCTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+	string mainBattery, backupBattery; //Set up Variables "mainBattery" "backupBattery"
+	bLCDBacklight = true; //Turn on the Backlight in the LCD
 	int X1 = 0, Y2 = 0, threshold = 5; //Set Integer Variables
 	while (1==1) //Infinite Loop
 	{
 		clearLCDLine(0); //Clears the Top Section of the Display
- clearLCDLine(1); //Clears the Bottom Section of the Display
-if(SensorValue[AutoSelect] <= 1350)
+		clearLCDLine(1); //Clears the Bottom Section of the Display
+		if(SensorValue[AutoSelect] <= 1350)
 		{
 			displayLCDCenteredString(0, "Autonomous:"); //Display "Autonomous:" on the Top Line
-			displayLCDCenteredString(1, "MGLb"); //Display the Autonomous on the Top Line
+			displayLCDCenteredString(1, "LEFT 10!"); //Display the Autonomous on the Top Line
 		}
-else if(SensorValue[AutoSelect] >= 1350 && SensorValue[AutoSelect] <= 2550)
+		else if(SensorValue[AutoSelect] >= 1350 && SensorValue[AutoSelect] <= 2550)
 		{
 			displayLCDCenteredString(0, "Autonomous:"); //Display "Autonomous:" on the Top Line
-			displayLCDCenteredString(1, "Defense"); //Display the Autonomous on the Top Line
+			displayLCDCenteredString(1, "RIGHT 10!"); //Display the Autonomous on the Top Line
 		}
-else if(SensorValue[AutoSelect] >= 2550 && SensorValue[AutoSelect] <= 3500)
+		else if(SensorValue[AutoSelect] >= 2550 && SensorValue[AutoSelect] <= 3500)
 		{
 			displayLCDCenteredString(0, "Autonomous:"); //Display "Autonomous:" on the Top Line
-			displayLCDCenteredString(1, "SGC"); //Display the Autonomous on the Top Line
+			displayLCDCenteredString(1, "LEFT 20!"); //Display the Autonomous on the Top Line
 		}
-else if(SensorValue[AutoSelect] >= 3500)
+		else if(SensorValue[AutoSelect] >= 3500)
 		{
-//Display the Primary Robot battery voltage
-displayLCDString(0, 0, "Primary: ");
-sprintf(mainBattery, "%1.2f%c", nImmediateBatteryLevel/1000.0,'V'); //Build the Value to be Displayed
-displayNextLCDString(mainBattery);
+			//Display the Primary Robot battery voltage
+			displayLCDString(0, 0, "Primary: ");
+			sprintf(mainBattery, "%1.2f%c", nImmediateBatteryLevel/1000.0,'V'); //Build the Value to be Displayed
+			displayNextLCDString(mainBattery);
 
-int battery2Level = (int)((float)SensorValue[ BATERY_2_PORT ] * 5.48);
+			int battery2Level = (int)((float)SensorValue[ BATERY_2_PORT ] * 5.48);
 
-//Display the Backup battery voltage
+			//Display the Backup battery voltage
 
-displayLCDString(1, 0, "Backup: ");
-sprintf(backupBattery, "%1.2f%c", battery2Level, 'V');    //Build the Value to be Displayed
-displayNextLCDString(backupBattery);
-//wait1Msec(200);
-}
+			displayLCDString(1, 0, "Backup: ");
+			sprintf(backupBattery, "%1.2f%c", battery2Level, 'V');    //Build the Value to be Displayed
+			displayNextLCDString(backupBattery);
+			//wait1Msec(200);
+		}
 
-//~~~~~~~~~~~~~~~~~~Drivetrain PID~~~~~~~~~~~~~~~~~~~~~//
+		//~~~~~~~~~~~~~~~~~~Drivetrain PID~~~~~~~~~~~~~~~~~~~~~//
 
 		//front alignment check every 600 ticks, calculate error
 		if (abs(nMotorEncoder[frontLeftDrive]) || abs(nMotorEncoder[frontRightDrive]) >= 600){
@@ -308,27 +492,27 @@ displayNextLCDString(backupBattery);
 			imeReset();
 		}
 
-//~~~~~~~~~~~~~~~~~~~~~~~Driver_Control_Controller_1~~~~~~~~~~~~~~~~~~~~~~~~~//
-		
-	  //if right joystick up || down
+		//~~~~~~~~~~~~~~~~~~~~~~~Driver_Control_Controller_1~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+		//if right joystick up || down
 		if(abs(vexRT[Ch2]) > threshold){
 			if(vexRT[Ch2] < 0){
 				X1 = -1;
-			}else if(vexRT[Ch2] > 0){
+				}else if(vexRT[Ch2] > 0){
 				X1 = 1;
 			}
-		}else{
+			}else{
 			X1 = 0;
 		}
 		//if left joystick up || down
 		if(abs(vexRT[Ch3]) > threshold){
 			Y2 = vexRT[Ch3];
 			/*if(vexRT[Ch3] < 0){
-				Y2 = -1;
+			Y2 = -1;
 			}else if(vexRT[Ch3] > 0){
-				Y2 = 1;
+			Y2 = 1;
 			}*/
-		}else{
+			}else{
 			Y2 = 0;
 		}//drive the bois
 		motor[frontLeftDrive] = Y2;
@@ -347,7 +531,7 @@ displayNextLCDString(backupBattery);
 			mogoLift = 2;
 			motor [mobileBoiBaseL] = -127;
 			motor [mobileBoiBaseR] = -127;
-		}else{
+			}else{
 			mogoLift = 0;
 			motor [mobileBoiBaseL] = 0;
 			motor [mobileBoiBaseR] = 0;
@@ -358,39 +542,43 @@ displayNextLCDString(backupBattery);
 			imeReset();
 		}
 
-//~~~~~~~~~~~~~~~~~~~~~~Driver_Control_Controller_2~~~~~~~~~~~~~~~~~~~~~~~//
+		//~~~~~~~~~~~~~~~~~~~~~~Driver_Control_Controller_2~~~~~~~~~~~~~~~~~~~~~~~//
 
 		//Cone intake control
 		if(vexRT [Btn6UXmtr2]==1){
 			coneIntakeVal = 1;
-			motor[coneIntake] = 100;
-}
+			motor[coneIntake] = 127;
+		}
 		else if(vexRT [Btn6DXmtr2]==1) {
 			coneIntakeVal = 2;
-	    		motor[coneIntake] = -100;
+			motor[coneIntake] = -127;
 		}
 		else{
-		motor[coneIntake]=0;
-	}
+			coneIntakeVal = 0;
+			motor[coneIntake]=0;
+		}
 
 		//Drive fourbar base (motors y'd)
 		if(abs(vexRT[Ch2Xmtr2]) > threshold){
-			if (vexRT[Ch2Xmtr2] > 0){ drFrBrBaseVal = 1; }else{ drFrBrBaseVal = 2; }
 			motor[drFrBr] = vexRT[Ch2Xmtr2];
 		}
 		else{
-			drFrBrBaseVal = 0;
 			motor[drFrBr] = 0;
 		}
 
 		//Top bois
 		if(abs(vexRT[Ch3Xmtr2]) > threshold){
-			if (vexRT[Ch3Xmtr2] > 0){ drFrBrTop = 1; }else{ drFrBrTop = 2; }
-			motor[top] = vexRT[Ch3Xmtr2];
-		}
+			if (vexRT[Ch3Xmtr2] > 0){drFrBrTop = 1;} else{drFrBrTop=2;}
+				motor[top] = vexRT[Ch3Xmtr2];
+			}
+
 		else{
 			drFrBrTop = 0;
 			motor[top] = 0;
 		}
+	//while(SensorValue[TopPot]<2093){
+		//motor[top]=55;
+//	}
+	}
 }
-}
+//2093
