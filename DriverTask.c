@@ -157,11 +157,11 @@ task Control
 			if(vexRT[Btn7L]==1){
 				startTask(flipCap);
 			}
-			else if(vexRT[Btn7U]==1){
+			else if(vexRT[Btn6U]==1){
 				on=1;
 				motor[CFlipper]=127;
 			}
-			else if(vexRT[Btn7D]==1){
+			else if(vexRT[Btn6D]==1){
 				on=1;
 				motor[CFlipper]=-127;
 			}
