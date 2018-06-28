@@ -38,11 +38,5 @@ task usercontrol()
   // User control code here, inside the loop
 	startTask(PIDRight);
 	startTask(PIDLeft);
-
-  while (true)
-  {
-    //Control();
-
-
-  }
+	startTask(Control);
 }

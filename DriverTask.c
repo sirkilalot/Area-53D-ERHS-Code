@@ -1,3 +1,4 @@
+/*
 task PIDLeft {
 	int threshold=5;
 	int d,i;
@@ -6,21 +7,19 @@ task PIDLeft {
 	float lastError = 0;
 	float totalError = 0;
 	float Deriv = 0;
-	float  Kp = 5;
-	float  Ki = 0.03;
-	float  Kd = 60.0;
-	int	allowedError=20;
+	float  Kp = 25;
+	float  Ki = 0;
+	float  Kd = 10;
+	int	allowedError=5;
 	a=SensorValue[LDE];
 	b=a;
 	while(true)
 	{
-		if(abs(vexRT[Ch3]) > threshold){
-			Y2 = vexRT[Ch3];
-			}else{
-			Y2 = 0;
-		}
-			clearLCDLine(1);
-		clearLCDLine(0);
+			Y2=vexRt[Ch2];
+			X1=vexRT[ch1];
+			if(abs(Y2)<threshold) Y2=0;
+			if(abs(X1)<threshold) X1=0;
+
 
 		b=SensorValue[LDE];
 				error=(b-a);
@@ -44,34 +43,25 @@ task PIDLeft {
 		if(abs(error)>100) i=0;
 
 power=-(p+i+d);
-		displayNextLCDNumber(p);
-		displayNextLCDString(" ");
-		displayNextLCDNumber(i);
-		displayNextLCDString(" ");
-		displayNextLCDNumber(d);
-		displayNextLCDString(" ");
-		displayNextLCDNumber(power);
-		displayNextLCDString(" ");
-		displayLCDPos(1,1);
-		displayNextLCDNumber(error);
-		displayNextLCDString(" ");
+
 
 
 		if((abs(vexRT[Ch3]) < threshold)&&(abs(vexRT[Ch2]) < threshold)){
 			if(power>127) power=127;
 			else if(power<-127) power=-127;
 			motor[LDrive]=power;
-			displayNextLCDNumber(power);
+
 		}
 		else{
 			a=SensorValue[LDE];
-			motor[LDrive] = Y2;
+			motor[LDrive] = Y2+X1;
 		}
 		wait1Msec(20);
 
 	}
 	//END PIDLeft
 }
+*/
 task PIDRight {
 	int threshold=5;
 	int d,i;
@@ -80,21 +70,20 @@ task PIDRight {
 	float lastError = 0;
 	float totalError = 0;
 	float Deriv = 0;
-	float  Kp = 5;
-	float  Ki = 0.03;
-	float  Kd = 60.0;
-	int	allowedError=20;
+	float  Kp = 4;
+	float  Ki = 0.04;
+	float  Kd = 100;
+	int	allowedError=10;
 	a=SensorValue[RDE];
 	b=a;
 	while(true)
 	{
-		if(abs(vexRT[Ch2]) > threshold){
-			X1 = vexRT[Ch2];
-			}else{
-			X1 = 0;
-		}
-			clearLCDLine(1);
-		clearLCDLine(0);
+			Y2=vexRt[Ch2];
+			X1=vexRT[ch1];
+			if(abs(Y2)<threshold) Y2=0;
+			if(abs(X1)<threshold) X1=0;
+
+
 
 		b=SensorValue[RDE];
 				error=(b-a);
@@ -118,28 +107,18 @@ task PIDRight {
 		if(abs(error)>100) i=0;
 
 power=-(p+i+d);
-		displayNextLCDNumber(p);
-		displayNextLCDString(" ");
-		displayNextLCDNumber(i);
-		displayNextLCDString(" ");
-		displayNextLCDNumber(d);
-		displayNextLCDString(" ");
-		displayNextLCDNumber(power);
-		displayNextLCDString(" ");
-		displayLCDPos(1,1);
-		displayNextLCDNumber(error);
-		displayNextLCDString(" ");
+
 
 
 		if((abs(vexRT[Ch3]) < threshold)&&(abs(vexRT[Ch2]) < threshold)){
 			if(power>127) power=127;
 			else if(power<-127) power=-127;
 			motor[RDrive]=power;
-			displayNextLCDNumber(power);
+
 		}
 		else{
 			a=SensorValue[RDE];
-			motor[RDrive] = X1;
+			motor[RDrive] = Y2-X1;
 		}
 		wait1Msec(20);
 
@@ -147,12 +126,14 @@ power=-(p+i+d);
 	//END PIDRight
 }
 
-void Control()
+task Control
 {
 	//DECLARATIONS
 	int threshold = 5;
+	int Y2=0, X1=0;
 
 		while(true){
 
-		}
+
+	}
 }
