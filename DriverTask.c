@@ -141,7 +141,7 @@ task Control
 {
 	//DECLARATIONS
 	int threshold = 5;
-	int Y2=0, X1=0, Y4=0, on=0;
+	int Y2=0, X1=0, Y3=0, on=0;
 	while(true)
 	{
 //---------------------------------------------FIRST CONTROLER----------------------------------------------------------
@@ -171,10 +171,10 @@ task Control
 			}
 
 			//6-bar lift
-			Y4=vexRT[Ch4];
-			if(abs(Y4)<threshold) Y4=0;
-			motor[LeftBar]=Y4;
-			motor[RightBar]=Y4;
+			Y3=vexRT[Ch3];
+			if(abs(Y3)<threshold) Y3=0;
+			motor[LeftBar]=Y3;
+			motor[RightBar]=Y3;
 //---------------------------------------------SECOND CONTROLER----------------------------------------------------------
 
 			//ball intake
