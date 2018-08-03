@@ -1,4 +1,3 @@
-/*
 task PIDLeft {
 	int threshold=5;
 	int d,i;
@@ -7,19 +6,21 @@ task PIDLeft {
 	float lastError = 0;
 	float totalError = 0;
 	float Deriv = 0;
-	float  Kp = 25;
-	float  Ki = 0;
-	float  Kd = 10;
-	int	allowedError=5;
+	float  Kp = 5;
+	float  Ki = 0.03;
+	float  Kd = 60.0;
+	int	allowedError=20;
 	a=SensorValue[LDE];
 	b=a;
 	while(true)
 	{
-			Y2=vexRt[Ch2];
-			X1=vexRT[ch1];
-			if(abs(Y2)<threshold) Y2=0;
-			if(abs(X1)<threshold) X1=0;
-
+		if(abs(vexRT[Ch3]) > threshold){
+			Y2 = vexRT[Ch3];
+			}else{
+			Y2 = 0;
+		}
+			clearLCDLine(1);
+		clearLCDLine(0);
 
 		b=SensorValue[LDE];
 				error=(b-a);
@@ -43,25 +44,36 @@ task PIDLeft {
 		if(abs(error)>100) i=0;
 
 power=-(p+i+d);
-
+		displayNextLCDNumber(p);
+		displayNextLCDString(" ");
+		displayNextLCDNumber(i);
+		displayNextLCDString(" ");
+		displayNextLCDNumber(d);
+		displayNextLCDString(" ");
+		displayNextLCDNumber(power);
+		displayNextLCDString(" ");
+		displayLCDPos(1,1);
+		displayNextLCDNumber(error);
+		displayNextLCDString(" ");
 
 
 		if((abs(vexRT[Ch3]) < threshold)&&(abs(vexRT[Ch2]) < threshold)){
 			if(power>127) power=127;
 			else if(power<-127) power=-127;
 			motor[LDrive]=power;
-
+			motor[TopLDrive]=power;
+			displayNextLCDNumber(power);
 		}
 		else{
 			a=SensorValue[LDE];
-			motor[LDrive] = Y2+X1;
+			motor[LDrive] = Y2;
+			motor[TopLDrive]=Y2;
 		}
 		wait1Msec(20);
 
 	}
 	//END PIDLeft
 }
-*/
 task PIDRight {
 	int threshold=5;
 	int d,i;
@@ -70,20 +82,21 @@ task PIDRight {
 	float lastError = 0;
 	float totalError = 0;
 	float Deriv = 0;
-	float  Kp = 4;
-	float  Ki = 0.04;
-	float  Kd = 100;
-	int	allowedError=10;
+	float  Kp = 5;
+	float  Ki = 0.03;
+	float  Kd = 60.0;
+	int	allowedError=20;
 	a=SensorValue[RDE];
 	b=a;
 	while(true)
 	{
-			Y2=vexRt[Ch2];
-			X1=vexRT[ch1];
-			if(abs(Y2)<threshold) Y2=0;
-			if(abs(X1)<threshold) X1=0;
-
-
+		if(abs(vexRT[Ch2]) > threshold){
+			X1 = vexRT[Ch2];
+			}else{
+			X1 = 0;
+		}
+			clearLCDLine(1);
+		clearLCDLine(0);
 
 		b=SensorValue[RDE];
 				error=(b-a);
@@ -107,18 +120,30 @@ task PIDRight {
 		if(abs(error)>100) i=0;
 
 power=-(p+i+d);
-
+		displayNextLCDNumber(p);
+		displayNextLCDString(" ");
+		displayNextLCDNumber(i);
+		displayNextLCDString(" ");
+		displayNextLCDNumber(d);
+		displayNextLCDString(" ");
+		displayNextLCDNumber(power);
+		displayNextLCDString(" ");
+		displayLCDPos(1,1);
+		displayNextLCDNumber(error);
+		displayNextLCDString(" ");
 
 
 		if((abs(vexRT[Ch3]) < threshold)&&(abs(vexRT[Ch2]) < threshold)){
 			if(power>127) power=127;
 			else if(power<-127) power=-127;
 			motor[RDrive]=power;
-
+			motor[TopRDrive]=power;
+			displayNextLCDNumber(power);
 		}
 		else{
 			a=SensorValue[RDE];
-			motor[RDrive] = Y2-X1;
+			motor[RDrive] = X1;
+			motor[TopRDrive]=X1;
 		}
 		wait1Msec(20);
 
@@ -126,64 +151,12 @@ power=-(p+i+d);
 	//END PIDRight
 }
 
-task flipCap
-{
-int CF=180;
-int CFN=CF;
-	SensorValue[CFlip]=abs(sensorValue[CFlip]);
-	while (sensorValue[CFlip]>CF) sensorValue[CFlip]-=CF;
-	while((CFN-sensorValue[CFlip])>=5) motor[CFlipper]=127;
-	motor[CFlipper]=0;
-	sensorValue[CFlip]-=CF;
-}
-
-task Control
+void Control()
 {
 	//DECLARATIONS
 	int threshold = 5;
-	int Y2=0, X1=0, Y3=0, on=0;
-	while(true)
-	{
-//---------------------------------------------FIRST CONTROLER----------------------------------------------------------
-			//drive
-			Y2=vexRt[Ch2];
-			X1=vexRT[Ch1];
-			if(abs(Y2)<threshold) Y2=0;
-			if(abs(X1)<threshold) X1=0;
-			motor[RDrive]=Y2-X1;
-			motor[RDrive]=Y2+X1;
 
-			//capflipper
-			if(vexRT[Btn7L]==1){
-				startTask(flipCap);
-			}
-			else if(vexRT[Btn6U]==1){
-				on=1;
-				motor[CFlipper]=127;
-			}
-			else if(vexRT[Btn6D]==1){
-				on=1;
-				motor[CFlipper]=-127;
-			}
-			else if(on==1){
-				on=0;
-				motor[CFlipper]=0;
-			}
+		while(true){
 
-			//6-bar lift
-			Y3=vexRT[Ch3];
-			if(abs(Y3)<threshold) Y3=0;
-			motor[LeftBar]=Y3;
-			motor[RightBar]=Y3;
-//---------------------------------------------SECOND CONTROLER----------------------------------------------------------
-
-			//ball intake
-			if(vexRT[Btn7UXmtr2])
-				motor[BIntake]=127;
-			else if(vexRT[Btn7DXmtr2])
-				motor[BIntake]=-127;
-			else motor[BIntake]=0;
-			//flywheel
-			motor[FlyWheel]=127;
 		}
 }
