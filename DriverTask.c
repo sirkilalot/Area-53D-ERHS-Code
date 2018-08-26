@@ -175,24 +175,22 @@ task Control
 
 		//4-bar lift  ----------------------------------CHANGYBITTTS
 		if(vexRT[Btn7U])
-			RequestedVal=600;
-		else if(vexRT[Btn7L])
 			RequestedVal=900;
+		else if(vexRT[Btn7L])
+			RequestedVal=600;
 		else if(vexRT[Btn7D])
-			RequestedVal=1200;
+			RequestedVal=0;
 
 		else if(vexRT[Btn5U]){
 			RequestedVal=RequestedVal+64;
-			if(RequestedVal>1500)
-				RequestedVal=1500;
+			if(RequestedVal>900)
+				RequestedVal=900;
 		}
 		else if(vexRT[Btn5U]){
 			RequestedVal=RequestedVal-64;
-			if(RequestedVal<0)
+			if(nMotorEncoder[LTower]<8)
 				RequestedVal=0;
 		}
-		else RequestedVal=nMotorEncoder[LTower];
-
 				//capflipper
 
 		if(vexRT[Btn8R]){
