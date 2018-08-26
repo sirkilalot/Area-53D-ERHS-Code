@@ -186,9 +186,9 @@ task Control
 			if(RequestedVal>900)
 				RequestedVal=900;
 		}
-		else if(vexRT[Btn5U]){
+		else if(vexRT[Btn5D]){
 			RequestedVal=RequestedVal-64;
-			if(nMotorEncoder[LTower]<8)
+			if(RequestedVal<0)
 				RequestedVal=0;
 		}
 				//capflipper
