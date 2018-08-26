@@ -200,12 +200,12 @@ task Control
 		}
 		else if(vexRT[Btn6U]){
 			on=1;
-			motor[CFlipper]=-127;
+			motor[CFlipper]=127;
 		}
 
 		else if(vexRT[Btn6D]){
 			on=1;
-			motor[CFlipper]=127;
+			motor[CFlipper]=-127;
 		}
 		else if(on==1){
 			on=0;
