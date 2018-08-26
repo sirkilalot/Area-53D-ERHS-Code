@@ -14,8 +14,8 @@ task PIDLeft {
 	b=a;
 	while(true)
 	{
-		Y2=vexRt[Ch2];
-		X1=vexRT[ch1];
+		Y2=vexRT[Ch2];
+		X1=vexRT[Ch1];
 		if(abs(Y2)<threshold) Y2=0;
 		if(abs(X1)<threshold) X1=0;
 
@@ -136,10 +136,32 @@ task FlipaCap
 	motor[CFlipper]=0;
 }
 
+task LiftParts
+{
+	float CurrentVal;
+	float error;
+	int power;
+
+	while(true)
+	{
+		CurrentVal=nMotorEncoder[LTower];
+		error=RequestedVal-CurrentVal;
+		power=Kp_T*error;
+		motor[RTower]=power;
+		motor[LTower]=power;
+		wait1Msec(25);
+	}
+}
+
 task Control
 {
 	int threshold = 5;
 	int Y2=0, X1=0, Y3=0, on=0;
+
+	//Lift Stuff
+	RequestedVal=nMotorEncoder[LTower];
+	startTask(LiftParts);
+
 	while(true)
 	{
 		//---------------------------------------------FIRST CONTROLER----------------------------------------------------------
@@ -151,24 +173,30 @@ task Control
 		motor[RDrive]=Y2;
 		motor[LDrive]=Y3;
 
-		//6-bar lift
-		if(vexRT[Btn5U]){
-			motor[LTower]=127;
-			motor[RTower]=127;
-		}
-		else if(vexRT[Btn5D]){
-			motor[LTower]=-127;
-			motor[RTower]=-127;
-		}
-		else{
-			motor[LTower]=0;
-			motor[RTower]=0;
-		}
+		//4-bar lift  ----------------------------------CHANGYBITTTS
+		if(vexRT[Btn7U])
+			RequestedVal=600; //Position #1
+		else if(vexRT[Btn7L])
+			RequestedVal=900; //Position #2
+		else if(vexRT[Btn7D])
+			RequestedVal=1200; //Position #3
 
+		//Manual Control + Limits
+		if(vexRT[Btn5U]){
+			RequestedVal=RequestedVal+127;
+			if(RequestedVal>1500)
+				RequestedVal=1500; //UpperLimit
+		}
+		else if(vexRT[Btn5U]){
+			RequestedVal=RequestedVal-127;
+			if(RequestedVal<0)
+				RequestedVal=0;
+		}
+//------------------------------------------------endofchangybits
 				//capflipper
 
 		if(vexRT[Btn8R]){
-			starttask(FlipaCap);
+			startTask(FlipaCap);
 		}
 		else if(vexRT[Btn6U]){
 			on=1;
