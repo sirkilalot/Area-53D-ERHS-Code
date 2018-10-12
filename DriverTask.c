@@ -125,43 +125,18 @@ task PIDRight {
 	//END PIDRight
 }
 
-task FlipaCap
-{
-	int CF=180;
-	if(SensorValue[CFlip]%CF==0) SensorValue[CFlip]+=1;
-	while(SensorValue[CFlip]>CF) SensorValue[CFlip]-=CF;
-	while(SensorValue[CFlip]<CF) motor[CFlipper]=127;
-	motor[CFlipper]=-127;
-	wait1Msec(3);
-	motor[CFlipper]=0;
-}
 
-task LiftParts
-{
-	float CurrentVal;
-	float error;
-	int power;
 
-	while(true)
-	{
-		CurrentVal=nMotorEncoder[LTower];
-		error=RequestedVal-CurrentVal;
-		power=Kp_T*error;
-		motor[RTower]=power;
-		motor[LTower]=power;
-		wait1Msec(25);
-	}
-}
 
 task Control
 {
-	int threshold = 5;
-	int Y2=0, X1=0, Y3=0, on=0;
+	int threshold = 9;
+	int Y2=0, X1=0, Y3=0, on=0, up=0;
 
 	//Lift Stuff
-	RequestedVal=nMotorEncoder[LTower];
-	startTask(LiftParts);
-
+	SensorValue[RDE]=0;
+	SensorValue[LDE]=0;
+	SensorValue[RTower]=0;
 	while(true)
 	{
 		//---------------------------------------------FIRST CONTROLER----------------------------------------------------------
@@ -171,44 +146,48 @@ task Control
 		if(abs(Y2)<threshold) Y2=0;
 		if(abs(Y3)<threshold) Y3=0;
 		motor[RDrive]=Y2;
+		motor[RDrive1]=Y2;
 		motor[LDrive]=Y3;
+		motor[LDrive1]=Y3;
 
 		//4-bar lift  ----------------------------------CHANGYBITTTS
-		if(vexRT[Btn7U])
-			RequestedVal=900;
-		else if(vexRT[Btn7L])
-			RequestedVal=600;
-		else if(vexRT[Btn7D])
-			RequestedVal=0;
 
-		else if(vexRT[Btn5U]){
-			RequestedVal=RequestedVal+64;
-			if(RequestedVal>900)
-				RequestedVal=900;
+		if(vexRT[Btn5U]) {
+			motor[LTower]=127;
+			motor[RTower]=127;
 		}
-		else if(vexRT[Btn5D]){
-			RequestedVal=RequestedVal-64;
-			if(RequestedVal<0)
-				RequestedVal=0;
+		else if(vexRT[Btn5D]) {
+			motor[LTower]=-127;
+			motor[RTower]=-127;
 		}
-				//capflipper
-
-		if(vexRT[Btn8R]){
-			startTask(FlipaCap);
+		else{
+			motor[LTower]=0;
+			motor[RTower]=0;
 		}
-		else if(vexRT[Btn6U]){
-			on=1;
+		//capflipper
+		if(vexRT[Btn6U]){
 			motor[CFlipper]=-127;
 		}
 
 		else if(vexRT[Btn6D]){
-			on=1;
 			motor[CFlipper]=127;
 		}
-		else if(on==1){
-			on=0;
-			motor[CFlipper]=0;
-		}
+		else
+			motor[CFlipper]=-10;
+
+		if(vexRT[Btn8U]){
+			int g,p;
+
+	p=0-SensorValue[RTower];
+	while (abs(p)>5){
+		motor[LTower]=p*3.3;
+		motor[RTower]=p*3.3;
+		p=g-SensorValue[RTower];
+		motor[CFlipper]=-127;}
+		motor[LTower]=0;
+		motor[RTower]=0;
+		motor[CFlipper]=0;
+	}
 
 		//---------------------------------------------SECOND CONTROLER----------------------------------------------------------
 
@@ -221,9 +200,13 @@ task Control
 		else motor[BIntake]=0;
 
 		//flywheel
-		if (vexRT[Btn5UXmtr2])
+		if (vexRT[Btn5UXmtr2]){
 			motor[FlyWheel]=127;
-		else
+			motor[FlyWheel1]=127;
+	}
+		else{
 			motor[FlyWheel]=0;
+		motor[FlyWheel1]=0;
+	}
 	}
 }
