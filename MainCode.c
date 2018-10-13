@@ -1,4 +1,6 @@
 #pragma config(I2C_Usage, I2C1, i2cSensors)
+#pragma config(Sensor, in1,    onesdf,         sensorPotentiometer)
+#pragma config(Sensor, in2,    twosdf,         sensorPotentiometer)
 #pragma config(Sensor, dgtl1,  RDE,            sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  CFlip,          sensorQuadEncoder)
 #pragma config(Sensor, dgtl11, LDE,            sensorQuadEncoder)

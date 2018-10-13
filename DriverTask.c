@@ -132,17 +132,20 @@ task Control
 {
 	int threshold = 9;
 	int Y2=0, X1=0, Y3=0, on=0, up=0;
+	int reversed=0;
 
-	//Lift Stuff
-	SensorValue[RDE]=0;
-	SensorValue[LDE]=0;
-	SensorValue[RTower]=0;
 	while(true)
 	{
 		//---------------------------------------------FIRST CONTROLER----------------------------------------------------------
 		//Drive
-		Y2=vexRT[Ch2];
-		Y3=vexRT[Ch3];
+		if (reversed==1){
+			Y2=-vexRT[Ch2];
+			Y3=-vexRT[Ch3];
+		}
+		else {
+			Y2=vexRT[Ch2];
+			Y3=vexRT[Ch3];
+		}
 		if(abs(Y2)<threshold) Y2=0;
 		if(abs(Y3)<threshold) Y3=0;
 		motor[RDrive]=Y2;
@@ -150,6 +153,10 @@ task Control
 		motor[LDrive]=Y3;
 		motor[LDrive1]=Y3;
 
+		if(vexRT[Btn7U]) {
+			if (reversed==0)reversed=1;
+			else if (reversed==1) reversed=0;
+		}
 		//4-bar lift  ----------------------------------CHANGYBITTTS
 
 		if(vexRT[Btn5U]) {
@@ -178,16 +185,16 @@ task Control
 		if(vexRT[Btn8U]){
 			int g,p;
 
-	p=0-SensorValue[RTower];
-	while (abs(p)>5){
-		motor[LTower]=p*3.3;
-		motor[RTower]=p*3.3;
-		p=g-SensorValue[RTower];
-		motor[CFlipper]=-127;}
-		motor[LTower]=0;
-		motor[RTower]=0;
-		motor[CFlipper]=0;
-	}
+			p=0-SensorValue[LTower];
+			while (abs(p)>10){
+				motor[LTower]=p*7;
+				motor[RTower]=p*7;
+				p=g-SensorValue[LTower];
+				motor[CFlipper]=-60;}
+			motor[LTower]=0;
+			motor[RTower]=0;
+			motor[CFlipper]=-10;
+		}
 
 		//---------------------------------------------SECOND CONTROLER----------------------------------------------------------
 
@@ -203,10 +210,10 @@ task Control
 		if (vexRT[Btn5UXmtr2]){
 			motor[FlyWheel]=127;
 			motor[FlyWheel1]=127;
-	}
+		}
 		else{
 			motor[FlyWheel]=0;
-		motor[FlyWheel1]=0;
-	}
+			motor[FlyWheel1]=0;
+		}
 	}
 }

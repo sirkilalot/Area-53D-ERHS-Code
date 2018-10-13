@@ -1,7 +1,7 @@
 void reset(){
 	SensorValue[RDE]=0;
 	SensorValue[LDE]=0;
-	SensorValue[RTower]=0;
+	SensorValue[LTower]=0;
 }
 
 void dflip(){
@@ -61,11 +61,11 @@ void Lift(int x){
 	if(x==0) g=0;
 	else if(x==1) g=600;
 	else if(x==2) g=900;
-	p=g-SensorValue[RTower];
+	p=g-SensorValue[LTower];
 	while (abs(p)>5){
 		motor[LTower]=p*3.3;
 		motor[RTower]=p*3.3;
-		p=g-SensorValue[RTower];
+		p=g-SensorValue[LTower];
 	}
 	motor[LTower]=0;
 	motor[RTower]=0;
