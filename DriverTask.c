@@ -131,32 +131,33 @@ task PIDRight {
 task Control
 {
 	int threshold = 9;
-	int Y2=0, X1=0, Y3=0, on=0, up=0;
+	int Y2=0, X1=0, Y3=0, on=0, up=0, Y22=0, Y32=0;
 	int reversed=0;
 
 	while(true)
 	{
 		//---------------------------------------------FIRST CONTROLER----------------------------------------------------------
 		//Drive
-		if (reversed==1){
-			Y2=-vexRT[Ch2];
-			Y3=-vexRT[Ch3];
-		}
-		else {
+			while(reversed=0){
 			Y2=vexRT[Ch2];
 			Y3=vexRT[Ch3];
+			motor[RDrive]=Y2;
+			motor[RDrive1]=Y2;
+			motor[LDrive]=Y3;
+			motor[LDrive1]=Y3;
+			if(vexRT[Btn8R]) reversed=1;
 		}
-		if(abs(Y2)<threshold) Y2=0;
-		if(abs(Y3)<threshold) Y3=0;
-		motor[RDrive]=Y2;
-		motor[RDrive1]=Y2;
-		motor[LDrive]=Y3;
-		motor[LDrive1]=Y3;
+			Y32=-vexRT[Ch2Xmtr2];
+			Y22=-vexRT[Ch3Xmtr2];
+			if(abs(Y22)<threshold) Y22=0;
+			if(abs(Y32)<threshold) Y32=0;
+			motor[RDrive]=Y22;
+			motor[RDrive1]=Y22;
+			motor[LDrive]=Y32;
+			motor[LDrive1]=Y32;
+			if(vexRT[Btn8RXmtr2]) reversed=0;
 
-		if(vexRT[Btn7U]) {
-			if (reversed==0)reversed=1;
-			else if (reversed==1) reversed=0;
-		}
+
 		//4-bar lift  ----------------------------------CHANGYBITTTS
 
 		if(vexRT[Btn5U]) {
@@ -173,28 +174,29 @@ task Control
 		}
 		//capflipper
 		if(vexRT[Btn6U]){
-			motor[CFlipper]=-127;
+			motor[CFlipper]=127;
 		}
 
 		else if(vexRT[Btn6D]){
-			motor[CFlipper]=127;
+			motor[CFlipper]=-127;
 		}
 		else
-			motor[CFlipper]=-10;
+			motor[CFlipper]=10;
 
 		if(vexRT[Btn8U]){
 			int g,p;
 
-			p=0-SensorValue[LTower];
-			while (abs(p)>10){
+			p=-nMotorEncoder[LTower];
+			while (abs(p)>70){
 				motor[LTower]=p*7;
 				motor[RTower]=p*7;
-				p=g-SensorValue[LTower];
-				motor[CFlipper]=-60;}
+				motor[CFlipper]=127;
+				p=nMotorEncoder[LTower]}
 			motor[LTower]=0;
 			motor[RTower]=0;
-			motor[CFlipper]=-10;
+			motor[CFlipper]=10;
 		}
+
 
 		//---------------------------------------------SECOND CONTROLER----------------------------------------------------------
 

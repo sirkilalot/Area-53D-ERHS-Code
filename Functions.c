@@ -4,24 +4,6 @@ void reset(){
 	SensorValue[LTower]=0;
 }
 
-void dflip(){
-	int p;
-	p=110-SensorValue[CFlip];
-	while (abs(p)>8){
-		motor[CFlipper]=p*3.3;
-		p=110-SensorValue[CFlip];
-	}
-	motor[CFlipper]=-10;
-}
-void uflip(){
-	int p;
-	p=SensorValue[CFlip]-110;
-	while (abs(p)>8){
-		motor[CFlipper]=p*3.3;
-		p=SensorValue[CFlip]-110;
-	}
-	motor[CFlipper]=-10;
-}
 void flyStart(){
 	motor[FlyWheel]=127;
 	motor[FlyWheel1]=127;
@@ -61,12 +43,20 @@ void Lift(int x){
 	if(x==0) g=0;
 	else if(x==1) g=600;
 	else if(x==2) g=900;
-	p=g-SensorValue[LTower];
-	while (abs(p)>5){
+	p=g-nMotorEncoder[LTower];
+	while (abs(p)>20){
 		motor[LTower]=p*3.3;
 		motor[RTower]=p*3.3;
-		p=g-SensorValue[LTower];
+		p=g-nMotorEncoder[LTower];
 	}
 	motor[LTower]=0;
 	motor[RTower]=0;
 }
+void flip(){
+	int g=SensorValue[CFlip]-1800;
+	while(g<SensorValue[CFlip]){
+		motor[CFlipper]=127;
+}
+motor[CFlipper]=10;
+}
+//7D for Fails!
