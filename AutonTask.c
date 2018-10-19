@@ -1,14 +1,19 @@
 task Auton
 {
 	//------------------------------------------DECLARATIONS----------------------------------------------------------------------
-	SensorValue[RDE]=0;
-	SensorValue[LDE]=0;
-	SensorValue[RTower]=0;
 
 
 	//------------------------------------------MOVEMENTCODE----------------------------------------------------------------------
 	reset();
+	drive(700);
+	drive(500);
 	flyStart();
-	drive(1000);
+	motor[BIntake]=127;
+	delay(8000);
+	motor[BIntake]=0;
+	flyStop();
+
+
+
 
 }
