@@ -3,8 +3,8 @@
 #pragma config(Sensor, dgtl1,  RDE,            sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  CFlip,          sensorQuadEncoder)
 #pragma config(Sensor, dgtl11, LDE,            sensorQuadEncoder)
-#pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
-#pragma config(Sensor, I2C_2,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
+#pragma config(Sensor, I2C_1,  LTower,         sensorQuadEncoderOnI2CPort,    , AutoAssign )
+#pragma config(Sensor, I2C_2,  RTower,         sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Motor,  port1,           BIntake,       tmotorVex393_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           RDrive,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port3,           FlyWheel,      tmotorVex393_MC29, openLoop)
@@ -64,4 +64,5 @@ task usercontrol()
 	//startTask(PIDRight);
 	//startTask(PIDLeft);
 	startTask(Control);
+	startTask(Driving);
 }
