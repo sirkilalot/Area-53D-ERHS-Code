@@ -22,11 +22,11 @@ void stopDrive(){
 void drive(int g){
 	int p;
 	p=g-SensorValue[RDE];
-	while (abs(p)>5){
-		motor[LDrive]=p*3.3;
-		motor[LDrive1]=p*3.3;
-		motor[RDrive]=p*3.3;
-		motor[RDrive1]=p*3.3;
+	while (abs(p)>7){
+		motor[LDrive]=p*4.3;
+		motor[LDrive1]=p*4.3;
+		motor[RDrive]=p*4.3;
+		motor[RDrive1]=p*4.3;
 		p=g-SensorValue[RDE];
 	}
 	stopDrive();
@@ -52,11 +52,5 @@ void Lift(int x){
 	motor[LTower]=0;
 	motor[RTower]=0;
 }
-void flip(){
-	int g=SensorValue[CFlip]-1800;
-	while(g<SensorValue[CFlip]){
-		motor[CFlipper]=127;
-}
-motor[CFlipper]=10;
-}
+
 //7D for Fails!
