@@ -36,23 +36,29 @@ drive(int x){
 int error;
 int kp=4;
 int p=0;
-int slave=120;
+if (x<0){
+	int slave=-120;
+	int master=-127;
+}
+else{
+	int slave=120;
+	int master=127;
+}
+int totalticks=0;
 SensorValue[LDE]=0;
 SensorValue[RDE]=0;
 	motor[LDrive]=slave;
 	motor[LDrive1]=slave;
-	motor[RDrive]=127;
-	motor[RDrive1]=127;
-  while (SensorValue[LDE]<x){
+	motor[RDrive]=master;
+	motor[RDrive1]=master;
+  while (abs(totalticks)<abs(x)){
     	motor[LDrive]=slave;
-	  motor[LDrive1]=slave;
-	  motor[RDrive]=127;
-	  motor[RDrive1]=127;
+	motor[LDrive1]=slave;
     error=SensorValue[LDE]-SensorValue[RDE];
     slave+=error/kp;
     SensorValue[LDE]=0;
     SensorValue[RDE]=0;
-  
+  totalticks+=SensorValue[LDE];
   }
 	stopDrive();
 }
