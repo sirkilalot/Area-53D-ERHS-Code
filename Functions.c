@@ -32,18 +32,16 @@ void drive(int g){
 	stopDrive();
 }
 */
-drive(int x){
+void drive(int x){
 int error;
-int kp=4;
-int p=0;
+float kp=2.05;
+int slave=-85;
+int master=-100;
 if (x<0){
-	int slave=-120;
-	int master=-127;
+	slave*=-1;
+	master*=-1;
 }
-else{
-	int slave=120;
-	int master=127;
-}
+
 int totalticks=0;
 SensorValue[LDE]=0;
 SensorValue[RDE]=0;
@@ -52,13 +50,18 @@ SensorValue[RDE]=0;
 	motor[RDrive]=master;
 	motor[RDrive1]=master;
   while (abs(totalticks)<abs(x)){
-    	motor[LDrive]=slave;
-	motor[LDrive1]=slave;
-    error=SensorValue[LDE]-SensorValue[RDE];
+    motor[LDrive]=slave;
+		motor[LDrive1]=slave;
+		motor[RDrive]=master;
+		motor[RDrive1]=master;
+		displayLCDNumber(0,0,totalticks);
+    error=SensorValue[RDE]-SensorValue[LDE];
     slave+=error/kp;
+     totalticks+=SensorValue[LDE];
     SensorValue[LDE]=0;
     SensorValue[RDE]=0;
-  totalticks+=SensorValue[LDE];
+
+  delay(100);
   }
 	stopDrive();
 }
