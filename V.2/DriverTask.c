@@ -158,6 +158,7 @@ task Driving
 			motor[LDrive1]=Y3;
 			if(vexRT[Btn8U]) reversed=1;
 		}
+	/*
 		Y32=-vexRT[Ch2Xmtr2];
 		Y22=-vexRT[Ch3Xmtr2];
 		if(abs(Y22)<threshold) Y22=0;
@@ -167,7 +168,7 @@ task Driving
 		motor[LDrive]=Y32;
 		motor[LDrive1]=Y32;
 		if(vexRT[Btn8RXmtr2]) reversed=0;
-
+*/
 	}
 }
 
@@ -176,7 +177,7 @@ task LiftControl
 	int auto=1;
 
 	while(true){
-
+/*
 		while(auto==1){
 		//automatic lift control
 		if(vexRT[Btn7U]) LiftPos(2);
@@ -185,7 +186,7 @@ task LiftControl
 		//switch lift to manual control
 		if(vexRT[Btn7R]) auto=0;
 		}
-
+*/
 		//manual lift control
 			if(vexRT[Btn5U]) {
 			motor[LTower]=127;
@@ -225,7 +226,7 @@ task Control
 			motor[CFlipper]=-127;
 		}
 		else
-			motor[CFlipper]=0;
+			motor[CFlipper]=-10;
 		/*
 		if (vexRT[Btn8D]){
 		reset();
