@@ -1,23 +1,21 @@
 task PIDLeft {
 	int threshold=5;
 	int d,i;
-	int X1 = 0, Y2 = 0;
+	int Y3=0;
 	float a,b,error,p,power;
 	float lastError = 0;
 	float totalError = 0;
 	float Deriv = 0;
-	float  Kp = 25;
-	float  Ki = 0.04;
-	float  Kd = 10;
-	int	allowedError=5;
+	float  Kp = 22;
+	float  Ki = 0.05;
+	float  Kd = 5.4;
+	int	allowedError=10
 	a=SensorValue[LDE];
 	b=a;
 	while(true)
 	{
-		Y2=vexRT[Ch2];
-		X1=vexRT[Ch1];
-		if(abs(Y2)<threshold) Y2=0;
-		if(abs(X1)<threshold) X1=0;
+		Y3=vexRT[Ch3];
+		if(abs(Y3)<threshold) Y3=0;
 
 
 		b=SensorValue[LDE];
@@ -53,7 +51,7 @@ task PIDLeft {
 		}
 		else{
 			a=SensorValue[LDE];
-			motor[LDrive] = Y2+X1;
+			motor[LDrive]=Y3;
 		}
 		wait1Msec(20);
 
@@ -64,23 +62,21 @@ task PIDLeft {
 task PIDRight {
 	int threshold=5;
 	int d,i;
-	int X1 = 0, Y2 = 0;
+	int Y2 = 0;
 	float a,b,error,p,power;
 	float lastError = 0;
 	float totalError = 0;
 	float Deriv = 0;
-	float  Kp = 25;
-	float  Ki = 0.04;
-	float  Kd = 10;
+	float  Kp = 22;
+	float  Ki = 0.05;
+	float  Kd = 5.4;
 	int	allowedError=10;
 	a=SensorValue[RDE];
 	b=a;
 	while(true)
 	{
 		Y2=vexRT[Ch2];
-		X1=vexRT[Ch1];
 		if(abs(Y2)<threshold) Y2=0;
-		if(abs(X1)<threshold) X1=0;
 
 
 
@@ -117,95 +113,68 @@ task PIDRight {
 		}
 		else{
 			a=SensorValue[RDE];
-			motor[RDrive] = Y2-X1;
+			motor[RDrive] = Y2;
 		}
 		wait1Msec(20);
 
 	}
 	//END PIDRight
 }
-/*task LiftControl
-{
 
-if(vexRT[Btn5U]) {
-motor[LTower]=127;
-motor[RTower]=127;
-}
-else if(vexRT[Btn5D]) {
-motor[LTower]=-127;
-motor[RTower]=-127;
-}
-else{
-motor[LTower]=0;
-motor[RTower]=0;
-}
-}
-}
-}*/
 
 task Driving
 {
-	int Y2=0, Y3=0, Y22=0, Y32=0, reversed=0, threshold=5;
+	int Y2=0, Y3=0, threshold=5;
 	while (true){
-		while(reversed==0){
+		while((true)&&(working==1)){
 			Y2=vexRT[Ch2];
 			Y3=vexRT[Ch3];
 			if(abs(Y2)<threshold) Y2=0;
 			if(abs(Y3)<threshold) Y3=0;
 			motor[RDrive]=Y2;
-			motor[RDrive1]=Y2;
 			motor[LDrive]=Y3;
-			motor[LDrive1]=Y3;
-			if(vexRT[Btn8U]) reversed=1;
+
 		}
-	/*
-		Y32=-vexRT[Ch2Xmtr2];
-		Y22=-vexRT[Ch3Xmtr2];
-		if(abs(Y22)<threshold) Y22=0;
-		if(abs(Y32)<threshold) Y32=0;
-		motor[RDrive]=Y22;
-		motor[RDrive1]=Y22;
-		motor[LDrive]=Y32;
-		motor[LDrive1]=Y32;
-		if(vexRT[Btn8RXmtr2]) reversed=0;
-*/
 	}
 }
-
 task LiftControl
 {
-	int auto=1;
-
-	while(true){
-/*
-		while(auto==1){
-		//automatic lift control
-		if(vexRT[Btn7U]) LiftPos(2);
-		if(vexRT[Btn7L]) LiftPos(1);
-		if(vexRT[Btn7D]) LiftPos(0);
-		//switch lift to manual control
-		if(vexRT[Btn7R]) auto=0;
-		}
-*/
-		//manual lift control
+	int auto=0;
+	while (true){
+		while((true)&&(working==1)){
+			/*
+			while(auto==1){
+			//automatic lift control
+			else if(vexRT[Btn7U]) LiftPos(2);
+			else if(vexRT[Btn7L]) LiftPos(1);
+			else if(vexRT[Btn7D]) LiftPos(0);
+			//switch lift to manual control
+			if(vexRT[Btn7R]) auto=0;
+			}
+			*/
+			//manual lift control
 			if(vexRT[Btn5U]) {
-			motor[LTower]=127;
-			motor[RTower]=127;
-		}
-		else if(vexRT[Btn5D]) {
-			motor[LTower]=-127;
-			motor[RTower]=-127;
-		}
-		else{
-			motor[LTower]=0;
-			motor[RTower]=0;
-		}
-		//switch back to automatic
-		if(vexRT[Btn7R]) auto=1;
+				motor[LTower]=127;
+				motor[RTower]=127;
+			}
+			else if(vexRT[Btn5D]) {
+				motor[LTower]=-127;
+				motor[RTower]=-127;
+			}
+			//else if(vexRT[Btn8U]) flipNdip();
+		//	else if(vexRT[Btn7U]) LiftPos(2);
+		//	else if(vexRT[Btn7L]) LiftPos(1);
+		//	else if(vexRT[Btn7D]) LiftPos(0);
+			else{
+				motor[LTower]=0;
+				motor[RTower]=0;
+			}
+			//switch back to automatic
+			//if(vexRT[Btn7R]) auto=1;
 
+		}
 	}
 }
-
 task Control
 {
 
@@ -214,19 +183,28 @@ task Control
 		//---------------------------------------------FIRST CONTROLER----------------------------------------------------------
 
 
-		//4-bar lift
+		//flip and dip
 
+		//if(vexRT[Btn8U]) flipNdip();
 
 		//capflipper
 		if(vexRT[Btn6U]){
-			motor[CFlipper]=127;
+			motor[LCap]=40;
+			motor[RCap]=40;
 		}
 
 		else if(vexRT[Btn6D]){
-			motor[CFlipper]=-127;
+			motor[RCap]=-42;
+			motor[LCap]=-42;
 		}
-		else
-			motor[CFlipper]=-10;
+		else {
+			motor[RCap]=0;
+			motor[LCap]=0;
+		}
+		if (vexRT[Btn8U])
+			flyStart();
+		else if (vexRT[Btn8D])
+			flyStop();
 		/*
 		if (vexRT[Btn8D]){
 		reset();
@@ -251,27 +229,27 @@ task Control
 		*/
 		//---------------------------------------------SECOND CONTROLER----------------------------------------------------------
 
-/*
+		/*
 		//ball intake
 		if(vexRT[Btn6UXmtr2])
-			motor[BIntake]=-127;
+		motor[BIntake]=-127;
 		else if(vexRT[Btn6DXmtr2])
-			motor[BIntake]=127;
+		motor[BIntake]=127;
 		else motor[BIntake]=0;
 
 		//flywheel
 		if (vexRT[Btn5UXmtr2]){
-			motor[FlyWheel]=127;
-			motor[FlyWheel1]=127;
+		motor[FlyWheel]=127;
+		motor[FlyWheel1]=127;
 		}
 		else if (vexRT[Btn5DXmtr2]){
-			motor[FlyWheel]=-127;
-			motor[FlyWheel1]=-127;
+		motor[FlyWheel]=-127;
+		motor[FlyWheel1]=-127;
 		}
 		else{
-			motor[FlyWheel]=0;
-			motor[FlyWheel1]=0;
+		motor[FlyWheel]=0;
+		motor[FlyWheel1]=0;
 		}
-	*/
+		*/
 	}
 }
